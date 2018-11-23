@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on Mon Jul  9 22:27:38 2018 by SUMO dfrouter Version 0.32.0
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/dfrouterConfiguration.xsd">
+
+    <input>
+        <net-file value="bogota2.net.xml"/>
+        <detector-files value="detectors.xml"/>
+        <measure-files value="measures.csv"/>
+    </input>
+
+    <output>
+        <routes-output value="routes.rou.xml"/>
+        <emitters-output value="emitters.rou.xml"/>
+        <validation-output value="validation_det.xml"/>
+        <validation-output.add-sources value="true"/>
+    </output>
+
+</configuration>
+-->
+
+<additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
+    <e1Detector id="validation_D89717070#0_0" lane="89717070#0_0" pos="16.00" freq="60" friendlyPos="1" file="validation_dets.xml"/>
+    <e1Detector id="validation_D89704060#0_0" lane="89704060#0_0" pos="15.00" freq="60" friendlyPos="1" file="validation_dets.xml"/>
+</additional>
