@@ -43,7 +43,7 @@ class TLS(object):
 		self.gamma = 0.9
 		self.epsilon = 1.0
 		self.setInYellow = -1
-		self.finishAuxPhase = True
+		self.finishPhase = [-1, True]
 		
 		
 		#Q matrix
@@ -159,31 +159,34 @@ class TLS(object):
 			idx = random.randint(0,len(opt_act)-1) 
 			self.currAction = opt_act[idx]          
 			
-		if(self.currAction != self.lastAction):
-			self.setInYellow = sec
-			self.finishAuxPhase = False
+		#if(self.currAction != self.lastAction):
+		#	self.setInYellow = sec
+		self.finishPhase = [sec, False]
 			
 	
 	def setPhase(self, currSod):
 		aux_phase = self.auxPhases[self.lastAction][self.currAction]
 		if(not(type(aux_phase)==list)):
-			if currSod <= self.setInYellow+var.timeYellow:
-				self.RedYellowGreenState = self.phases[aux_phase]
-			if (currSod > self.setInYellow+var.timeYellow) and (currSod <= self.setInYellow+var.timeYellow+var.minTimeGreen)
-				self.RedYellowGreenState = self.phases[self.currAction]
+			if aux_phase != -1:
+				if currSod <= self.finishPhase[0]+var.timeYellow:
+					self.RedYellowGreenState = self.phases[aux_phase]
+				if (currSod > self.finishPhase[0]+var.timeYellow) and (currSod <= self.finishPhase[0]+var.timeYellow+var.minTimeGreen):
+					self.RedYellowGreenState = self.phases[self.currAction]
+				else:
+					self.finishPhase = [-1, True]
 			else:
-				self.setInYellow = -1
-				self.finishAuxPhase = True
+				self.RedYellowGreenState = self.phases[self.currAction]
+				if currSod > (self.finishPhase[0]+var.minTimeGreen):
+					self.finishPhase = [-1, True]
 		else:
-			if currSod <= self.setInYellow+var.timeYellow:
+			if currSod <= self.finishPhase[0]+var.timeYellow:
 				self.RedYellowGreenState = self.phases[aux_phase[0]]
-			if (currSod > self.setInYellow+var.timeYellow) and (currSod <= self.setInYellow+(2*var.timeYellow)):
+			if (currSod > self.finishPhase[0]+var.timeYellow) and (currSod <= self.finishPhase[0]+(2*var.timeYellow)):
 				self.RedYellowGreenState = self.phases[aux_phase[1]]
-			if (currSod > self.setInYellow+(2*var.timeYellow)) and (currSod < self.setInYellow+(2*var.timeYellow)+var.minTimeGreen):
+			if (currSod > self.finishPhase[0]+(2*var.timeYellow)) and (currSod < self.finishPhase[0]+(2*var.timeYellow)+var.minTimeGreen):
 				self.RedYellowGreenState = self.phases[self.currAction]
 			else:
-				self.setInYellow = -1
-				self.finishAuxPhase = True
+				self.finishPhase = [-1, True]
 
 
 

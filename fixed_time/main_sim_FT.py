@@ -10,6 +10,7 @@ import os, sys
 
 if 'SUMO_HOME' in os.environ:
 	tools = os.path.join(os.environ['SUMO_HOME'], 'tools')
+	print(tools)
 	sys.path.append(tools)
 else:   
 	sys.exit("please declare environment variable 'SUMO_HOME'")
@@ -24,8 +25,10 @@ import math
 import var
 import gets
 
-execfile("./var.py")
-execfile("./gets.py")
+exec(open("./var.py").read())
+exec(open("./gets.py").read())
+# execfile("./var.py")
+# execfile("./gets.py")
 
 
 dfRewVals = {}

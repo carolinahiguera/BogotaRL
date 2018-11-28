@@ -4,16 +4,18 @@ Created on Nov 21, 2017
 @author: carolina
 '''
 import junction
-execfile("./junction.py")
+exec(open("./junction.py").read())
+#execfile("./junction.py")
 import TLS
-execfile("./TLS.py")
+exec(open("./TLS.py").read())
+#execfile("./TLS.py")
 
 global port, secondsInDay, episodes, sampleTime
 #avilable_ports = [8813, 8814, 8815, 8816, 8817, 8818, 8819, 8820] 
 #port = avilable_ports[2]
 
-secondsInDay = 100#46800
-episodes = 2
+secondsInDay = 46800#46800
+episodes = 5
 sampleTime = 1
 timeYellow = 3
 beta = [0.5, 2.0]

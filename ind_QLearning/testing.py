@@ -13,7 +13,7 @@ if 'SUMO_HOME' in os.environ:
     sys.path.append(tools)
 else:   
     sys.exit("please declare environment variable 'SUMO_HOME'")
-import traci
+import traci0
 sumoBinary = "sumo" #sumo-gui
 import random
 import pandas as pd

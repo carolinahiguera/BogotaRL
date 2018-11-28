@@ -10,9 +10,12 @@ REVIEW: 04/10/2018
 import fun
 import training
 import testing
-execfile("./fun.py")
-execfile("./training.py")
-execfile("./testing.py")
+exec(open("./fun.py").read())
+exec(open("./training.py").read())
+exec(open("./testing.py").read())
+# execfile("./fun.py")
+# execfile("./training.py")
+# execfile("./testing.py")
          
 fun.learnDiscretization()
 fun.writeDataClusters()

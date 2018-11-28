@@ -93,7 +93,7 @@ def data2files(day):
 
 
 def debug_phase(tls, currSod):
-	ryg_state = traci.trafficlights.getRedYellowGreenState(str(tls))
+	ryg_state = traci.trafficlight.getRedYellowGreenState(str(tls))
 	p_index = var.agent_TLS[tls].phases.index(ryg_state)
 	print('Sec: '+str(currSod) + '   Phase: '+str(p_index))
 
@@ -128,7 +128,7 @@ def ind_QLearning():
 				gets.getObservation()
 				for tls in var.agent_TLS:                    
 					var.agent_TLS[tls].getState()
-					traci.trafficlights.setRedYellowGreenState(str(tls), var.agent_TLS[tls].RedYellowGreenState)
+					traci.trafficlight.setRedYellowGreenState(str(tls), var.agent_TLS[tls].RedYellowGreenState)
 			else:    
 				#Sample the system
 				if(currSod%var.sampleTime == 0):
@@ -142,15 +142,15 @@ def ind_QLearning():
 						var.agent_TLS[tls].updateReward1()
 						var.agent_TLS[tls].updateReward2()  
 						#Q-Learning
-						if var.agent_TLS[tls].finishAuxPhase:
-							print('learning')
+						if var.agent_TLS[tls].finishPhase[1]:
+							#print('learning')
 							var.agent_TLS[tls].learnPolicy()
 							var.agent_TLS[tls].getAction(day, currSod)
 					saveData(currSod)  
 				
 				for tls in var.agent_TLS:
 					var.agent_TLS[tls].setPhase(currSod)
-					traci.trafficlights.setRedYellowGreenState(str(tls), 
+					traci.trafficlight.setRedYellowGreenState(str(tls), 
 						var.agent_TLS[tls].RedYellowGreenState)
 
 				debug_phase('tls_14_45', currSod)
