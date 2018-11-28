@@ -1,8 +1,3 @@
-'''
-Created on Nov 2018
-
-@author: carolina
-'''
 import os, sys
 import subprocess
 if 'SUMO_HOME' in os.environ:
@@ -12,18 +7,17 @@ else:
 	sys.exit("please declare environment variable 'SUMO_HOME'")
 import traci
 sumoBinary = "sumo" #sumo-gui
-import random
-import pandas as pd
+from scipy.cluster.vq import vq, kmeans, whiten
 import numpy as np
-import math
-import sklearn
-from sklearn.cluster import KMeans
+import pandas as pd
 import var
 import gets
+
 
 exec(open("./var.py").read())
 exec(open("./gets.py").read())
 observations = {}
+path = '~/Documents/BogotaRL/ind_QLearning/csv_files_obs/'
 
 def learnDiscretization():
 	global observations
@@ -46,7 +40,7 @@ def learnDiscretization():
 			if(currSod%var.sampleTime == 0):
 				gets.getObservation()                
 				for tls in var.agent_TLS.keys():
-					stateDataEntry = []
+					stateDataEntry = [int(currSod/3600)+6]
 					for j in range(0,len(var.agent_TLS[tls].listJunctions)):
 						jID = var.agent_TLS[tls].listJunctions[j]
 						for e in range(0,len(var.junctions[jID].edges)):
@@ -65,42 +59,21 @@ def learnDiscretization():
 	fileOut.write("End of observation")
 	fileOut.close()
 	#End of observation days
-	for tls in var.agent_TLS:
+	#Number of centroids for each tls
+	for tls in var.agent_TLS.keys():
 		x = int(sum(np.std(observations[tls], axis=0)))
 		print(tls + ' - ' + str(x))
-	
-	for tls in var.agent_TLS:
-	    fileOut = open("./csv_files_obs/recoveryStates_tls"+str(tls)+".csv","w")
-	    var.agent_TLS[tls].numClustersTracker = int(sum(np.std(observations[tls], axis=0)))
-	    if( var.agent_TLS[tls].numClustersTracker < var.min_numStates):
-	        var.agent_TLS[tls].numClustersTracker = var.min_numStates        
-	    var.agent_TLS[tls].numStates = var.agent_TLS[tls].numClustersTracker
-	    var.agent_TLS[tls].mapDiscreteStates = range(0,var.agent_TLS[tls].numStates)
-	    var.agent_TLS[tls].dictClusterObjects = KMeans(n_clusters=var.agent_TLS[tls].numClustersTracker)
-	    var.agent_TLS[tls].dictClusterObjects.fit(observations[tls])
-	    coord = var.agent_TLS[tls].dictClusterObjects.cluster_centers_
-	    for k in range(0,var.agent_TLS[tls].numClustersTracker):            
-	        map(lambda y: fileOut.write("  " + str(y)), coord[k])
-	        fileOut.write("\n")
-	    fileOut.close()
-	    print ("tls: " + str(tls) + " - clusters: " + str(var.agent_TLS[tls].numStates))
-
-def writeDataClusters():
-	dfClusters = pd.DataFrame()
-	for tls in var.agent_TLS:
-		df = pd.DataFrame([[tls,  var.agent_TLS[tls].numClustersTracker]])
-		dfClusters = dfClusters.append(df, ignore_index=True) 
-	aux = ['tls', 'states']
-	dfClusters.columns = aux
-	dfClusters.to_csv('./csv_files_obs/dfClusters.csv')
+	#Vector quatization
+	for tls in var.agent_TLS.keys():
+		var.agent_TLS[tls].normalize = np.array(np.std(observations[tls],axis=0))
+		whitened = whiten(observations[tls])
+		codes = round(sum(var.agent_TLS[tls].normalize))
+		if codes < var.min_numStates:
+			codes = var.min_numStates
+		var.agent_TLS[tls].numStates = codes
+		var.agent_TLS[tls].codebook = kmeans(whitened,codes)[0]
+		df = pd.DataFrame(var.agent_TLS[tls].codebook)
+		df.to_csv(path+'codebook_'+tls+'.csv')
+		df = pd.DataFrame(var.agent_TLS[tls].normalize)
+		df.to_csv(path+'normalize_'+tls+'.csv')
 		
-		
-	
-	
-							
-						
-				
-		
-	
-	
-

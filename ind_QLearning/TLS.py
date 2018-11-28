@@ -7,6 +7,7 @@ import var
 import numpy as np
 import pandas as pd
 import random
+from scipy.cluster.vq import vq, kmeans, whiten
 
 class TLS(object):
 	'''
@@ -54,9 +55,8 @@ class TLS(object):
 		#Discretizacion de espacio de estados
 		self.numStates = 0
 		self.numActions = len(self.actionPhases)
-		self.dictClusterObjects = {}
-		self.numClustersTracker = 0         
-		self.mapDiscreteStates = {}
+		self.codebook = None
+		self.normalize = None
 		
 		for j in range(0,len(self.listJunctions)):
 			jName = self.listJunctions[j]
@@ -116,6 +116,18 @@ class TLS(object):
 				reward -= a*b
 		self.currReward2 = reward
 	
+	def getState2(self,currSod):
+		state = [int(currSod/3600)+6]
+		for j in range(0,len(self.listJunctions)):
+			jID = self.listJunctions[j]
+			for e in range(0,len(var.junctions[jID].edges)):
+				state.append(self.queueEdgeTracker[j][e])
+			for e in range(0,len(var.junctions[jID].edges)):
+				state.append(self.waitingEdgeTracker[j][e])        
+		state = np.array([state/self.normalize]) #verificar
+		self.currState = vq(state, self.codebook)[0][0]
+
+
 	def getState(self):
 		state = []
 		for j in range(0,len(self.listJunctions)):
@@ -157,20 +169,16 @@ class TLS(object):
 			Qmax = max(self.QValues[self.currState, ])
 			opt_act = [x for x in range(0,self.numActions) if self.QValues[self.currState,x]==Qmax]
 			idx = random.randint(0,len(opt_act)-1) 
-			self.currAction = opt_act[idx]          
-			
-		#if(self.currAction != self.lastAction):
-		#	self.setInYellow = sec
+			self.currAction = opt_act[idx]
 		self.finishPhase = [sec, False]
-			
-	
+
 	def setPhase(self, currSod):
 		aux_phase = self.auxPhases[self.lastAction][self.currAction]
 		if(not(type(aux_phase)==list)):
 			if aux_phase != -1:
 				if currSod <= self.finishPhase[0]+var.timeYellow:
 					self.RedYellowGreenState = self.phases[aux_phase]
-				if (currSod > self.finishPhase[0]+var.timeYellow) and (currSod <= self.finishPhase[0]+var.timeYellow+var.minTimeGreen):
+				elif (currSod > self.finishPhase[0]+var.timeYellow) and (currSod <= self.finishPhase[0]+var.timeYellow+var.minTimeGreen):
 					self.RedYellowGreenState = self.phases[self.currAction]
 				else:
 					self.finishPhase = [-1, True]
@@ -181,30 +189,15 @@ class TLS(object):
 		else:
 			if currSod <= self.finishPhase[0]+var.timeYellow:
 				self.RedYellowGreenState = self.phases[aux_phase[0]]
-			if (currSod > self.finishPhase[0]+var.timeYellow) and (currSod <= self.finishPhase[0]+(2*var.timeYellow)):
+			elif (currSod > self.finishPhase[0]+var.timeYellow) and (currSod <= self.finishPhase[0]+(2*var.timeYellow)):
 				self.RedYellowGreenState = self.phases[aux_phase[1]]
-			if (currSod > self.finishPhase[0]+(2*var.timeYellow)) and (currSod < self.finishPhase[0]+(2*var.timeYellow)+var.minTimeGreen):
+			elif (currSod > self.finishPhase[0]+var.timeYellow) and (currSod <= self.finishPhase[0]+(3*var.timeYellow)):
+				self.RedYellowGreenState = self.phases[aux_phase[2]]
+			elif (currSod > self.finishPhase[0]+(3*var.timeYellow)) and (currSod <= self.finishPhase[0]+(3*var.timeYellow)+var.minTimeGreen):
 				self.RedYellowGreenState = self.phases[self.currAction]
 			else:
 				self.finishPhase = [-1, True]
-
-
-
-	# def setPhase(self, opt):
-	# 	aux_phase = self.auxPhases[self.lastAction][self.currAction]
-	# 	if(opt == 0):                        
-	# 		if(not(type(aux_phase)==list)):   
-	# 			self.RedYellowGreenState = self.phases[aux_phase]
-	# 		else:                   
-	# 			self.RedYellowGreenState = self.phases[aux_phase[0]] 
-	# 	if(opt == 1):
-	# 		self.RedYellowGreenState = self.phases[aux_phase[1]] 
-	# 	if(opt == 2):
-	# 		self.RedYellowGreenState = self.phases[self.currAction]
-	# 		self.setInYellow = -1
-	# 	return aux_phase
-
-	
+			
 	def applyPolicy(self, sec):
 		self.lastAction = self.currAction
 		self.currState = self.getState()

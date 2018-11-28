@@ -12,12 +12,13 @@ global port, secondsInDay, episodes, sampleTime
 #avilable_ports = [8813, 8814, 8815, 8816, 8817, 8818, 8819, 8820] 
 #port = avilable_ports[2]
 
-secondsInDay = 100#46800
+secondsInDay = 46800
 episodes = 1
-days2Observe = 3
+days2Observe = 5
 sampleTime = 1
-timeYellow = 3
-minTimeGreen = 10#tipico entre 6 y 10seg
+timeYellow = 2
+minTimeGreen = 9#tipico entre 6 y 10seg
+min_numStates = 10
 beta = [0.5, 2.0]
 theta = [1.75, 3.0]
 exp = [2.0, 1.5]
@@ -213,14 +214,13 @@ agent_TLS = {}
 
 tls = 'tls_14_45'
 listJunctions = [7]
-actionPhases = [0, 1, 2]
-auxPhases=[[-1, 3, [3,6]],
-           [4, -1, 6],
-           [[5,4], 5, -1]]
+actionPhases = [0,1]
+auxPhases = [[-1, [3,2,6]],
+             [[5,2,4], -1]]
 phases=[
     'GGGGrrrrGGGGrr',
-    'rrrrrrrrrrrrrr',
     'rrrrGGGGrrrrGG',
+    'rrrrrrrrrrrrrr',    
     'YYYYrrrrYYYYrr',
     'uuuurrrruuuurr',    
     'rrrrYYYYrrrrYY',
@@ -230,14 +230,13 @@ agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
 
 tls = 'tls_14_47'
 listJunctions = [8]
-actionPhases = [0, 1, 2]
-auxPhases=[[-1, 3, [3,6]],
-           [4, -1, 6],
-           [[5,4], 5, -1]]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],           
+           [[5,2,4], -1]]
 phases=[
-    'GGGGrrrrGG',
-    'rrrrrrrrrr',    
+    'GGGGrrrrGG',        
     'rrrrGGGGrr',
+    'rrrrrrrrrr',
     'YYYYrrrrYY',
     'uuuurrrruu',
     'rrrrYYYYrr',
@@ -247,14 +246,13 @@ agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
 
 tls = 'tls_14_49'
 listJunctions = [9]
-actionPhases = [0, 1, 2]
-auxPhases=[[-1, 3, [3,6]],
-           [4, -1, 6],
-           [[5,4], 5, -1]]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
 phases=[
     'GGGGrrGG',
-    'rrrrrrrr',    
     'rrrrGGrr',
+    'rrrrrrrr',
     'YYYYrrYY',
     'uuuurruu',
     'rrrrYYrr',
@@ -264,14 +262,13 @@ agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
 
 tls = 'tls_14_51'
 listJunctions = [10]
-actionPhases = [0, 1, 2]
-auxPhases=[[-1, 3, [3,6]],
-           [4, -1, 6],
-           [[5,4], 5, -1]]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
 phases=[
-    'rrGGGGGG',
-    'rrrrrrrr',    
+    'rrGGGGGG',       
     'GGrrrrrr',
+    'rrrrrrrr', 
     'rrYYYYYY',
     'rruuuuuu',
     'YYrrrrrr',
@@ -281,14 +278,13 @@ agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
 
 tls = 'tls_14_53'
 listJunctions = [11]
-actionPhases = [0, 1, 2]
-auxPhases=[[-1, 3, [3,6]],
-           [4, -1, 6],
-           [[5,4], 5, -1]]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
 phases=[
-    'GGGGrrrrrGGGGrrrr',
-    'rrrrrrrrrrrrrrrrr',    
+    'GGGGrrrrrGGGGrrrr',      
     'rrrrGGGGGrrrrGGGG',
+    'rrrrrrrrrrrrrrrrr',
     'YYYYrrrrrYYYYrrrr',
     'uuuurrrrruuuurrrr',
     'rrrrYYYYYrrrrYYYY',
@@ -298,14 +294,13 @@ agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
 
 tls = 'tls_13_45'
 listJunctions = [0]
-actionPhases = [0, 1, 2]
-auxPhases=[[-1, 3, [3,6]],
-           [4, -1, 6],
-           [[5,4], 5, -1]]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
 phases=[
-    'GGGGGGGrrrrrr',
-    'rrrrrrrrrrrrr',    
+    'GGGGGGGrrrrrr',        
     'rrrrrrrGGGGGG',
+    'rrrrrrrrrrrrr',
     'YYYYYYYrrrrrr',
     'uuuuuuurrrrrr',
     'rrrrrrrYYYYYY',
@@ -315,14 +310,13 @@ agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
 
 tls = 'tls_13_46_47'
 listJunctions = [1,2]
-actionPhases = [0, 1, 2]
-auxPhases=[[-1, 3, [3,6]],
-           [4, -1, 6],
-           [[5,4], 5, -1]]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
 phases=[
-    'GGGGrrrGGGGGrrrr',
-    'rrrrrrrrrrrrrrrr',    
+    'GGGGrrrGGGGGrrrr',        
     'rrrrrrrrrrrrGGGG',
+    'rrrrrrrrrrrrrrrr',
     'YYYYrrrYYYYYrrrr',
     'uuuurrruuuuurrrr',
     'rrrrrrrrrrrrYYYY',
@@ -332,14 +326,13 @@ agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
 
 tls = 'tls_13_49_50'
 listJunctions = [3, 4]
-actionPhases = [0, 1, 2]
-auxPhases=[[-1, 3, [3,6]],
-           [4, -1, 6],
-           [[5,4], 5, -1]]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
 phases=[
-    'GGGGGrrrrGGGGGrrrr',
-    'rrrrrrrrrrrrrrrrrr',    
+    'GGGGGrrrrGGGGGrrrr',        
     'rrrrrGGGGrrrrrGGGG',
+    'rrrrrrrrrrrrrrrrrr',
     'YYYYYrrrrYYYYYrrrr',
     'uuuuurrrruuuuurrrr',
     'rrrrrYYYYrrrrrYYYY',
@@ -349,14 +342,13 @@ agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
 
 tls = 'tls_13_51'
 listJunctions = [5]
-actionPhases = [0, 1, 2]
-auxPhases=[[-1, 3, [3,6]],
-           [4, -1, 6],
-           [[5,4], 5, -1]]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
 phases=[
-    'GGGGrrrr',
-    'rrrrrrrr',    
+    'GGGGrrrr',        
     'rrrrGGGG',
+    'rrrrrrrr',
     'YYYYrrrr',
     'uuuurrrr',
     'rrrrYYYY',
@@ -366,14 +358,13 @@ agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
 
 tls = 'tls_13_53'
 listJunctions = [6]
-actionPhases = [0, 1, 2]
-auxPhases=[[-1, 3, [3,6]],
-           [4, -1, 6],
-           [[5,4], 5, -1]]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], 5, -1]]
 phases=[
-    'GGGGGrrrrrr',
-    'rrrrrrrrrrr',    
+    'GGGGGrrrrrr',        
     'rrrrrGGGGGG',
+    'rrrrrrrrrrr',
     'YYYYYrrrrrr',
     'uuuuurrrrrr',
     'rrrrrYYYYYY',
@@ -383,14 +374,13 @@ agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
 
 tls = 'tls_9_53'
 listJunctions = [17]
-actionPhases = [0, 1, 2]
-auxPhases=[[-1, 3, [3,6]],
-           [4, -1, 6],
-           [[5,4], 5, -1]]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
 phases=[
-    'rrrrGGGGrr',
-    'rrrrrrrrrr',    
+    'rrrrGGGGrr',        
     'GGGGrrrrGG',
+    'rrrrrrrrrr',
     'rrrrYYYYrr',
     'rrrruuuurr',
     'YYYYrrrrYY',
@@ -400,14 +390,13 @@ agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
 
 tls = 'tls_7_45'
 listJunctions = [12]
-actionPhases = [0, 1, 2]
-auxPhases=[[-1, 3, [3,6]],
-           [4, -1, 6],
-           [[5,4], 5, -1]]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
 phases=[    
-    'GGGGGGGGGGOOrrrrrr',
-    'rrrrrrrrrrrrrrrrrr',    
+    'GGGGGGGGGGOOrrrrrr',       
     'rrrrrrrrrrrrGGGGGG',
+    'rrrrrrrrrrrrrrrrrr', 
     'YYYYYYYYYYOOrrrrrr',
     'uuuuuuuuuuOOrrrrrr',
     'rrrrrrrrrrrrYYYYYY',
@@ -417,14 +406,13 @@ agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
 
 tls = 'tls_7_46'
 listJunctions = [13]
-actionPhases = [0, 1, 2]
-auxPhases=[[-1, 3, [3,6]],
-           [4, -1, 6],
-           [[5,4], 5, -1]]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
 phases=[    
-    'GGGGGrrrrrrGGG',
-    'rrrrrrrrrrrrrr',    
+    'GGGGGrrrrrrGGG',        
     'rrrrrGGGGGGrrr',
+    'rrrrrrrrrrrrrr',
     'YYYYYrrrrrrYYY',
     'uuuuurrrrrruuu',
     'rrrrrYYYYYYrrr',
@@ -434,14 +422,13 @@ agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
 
 tls = 'tls_7_47'
 listJunctions = [14]
-actionPhases = [0, 1, 2]
-auxPhases=[[-1, 3, [3,6]],
-           [4, -1, 6],
-           [[5,4], 5, -1]]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
 phases=[    
-    'GGGGGrrrrrrrGGG',
-    'rrrrrrrrrrrrrrr',    
+    'GGGGGrrrrrrrGGG',        
     'rrrrrGGGGGGGrrr',
+    'rrrrrrrrrrrrrrr',
     'YYYYYrrrrrrrYYY',
     'uuuuurrrrrrruuu',
     'rrrrrYYYYYYYrrr',
@@ -451,14 +438,13 @@ agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
 
 tls = 'tls_7_49'
 listJunctions = [15]
-actionPhases = [0, 1, 2]
-auxPhases=[[-1, 3, [3,6]],
-           [4, -1, 6],
-           [[5,4], 5, -1]]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
 phases=[    
-    'rrGGGGGGGG',
-    'rrrrrrrrrr',    
+    'rrGGGGGGGG',        
     'GGrrrrrrrr',
+    'rrrrrrrrrr',
     'rrYYYYYYYY',
     'rruuuuuuuu',
     'YYrrrrrrrr',
@@ -468,14 +454,13 @@ agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
 
 tls = 'tls_7_53'
 listJunctions = [16]
-actionPhases = [0, 1, 2]
-auxPhases=[[-1, 3, [3,6]],
-           [4, -1, 6],
-           [[5,4], 5, -1]]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
 phases=[    
-    'GGGGGrrrGGGGrrrr',
-    'rrrrrrrrrrrrrrrr',    
+    'GGGGGrrrGGGGrrrr',        
     'rrrrrGGGrrrrGGGG',
+    'rrrrrrrrrrrrrrrr',
     'YYYYYrrrYYYYrrrr',
     'uuuuurrruuuurrrr',
     'rrrrrYYYrrrrYYYY',
