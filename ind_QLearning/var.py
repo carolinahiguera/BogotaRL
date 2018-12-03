@@ -13,7 +13,7 @@ global port, secondsInDay, episodes, sampleTime
 #port = avilable_ports[2]
 
 secondsInDay = 46800
-episodes = 1
+episodes = 500
 days2Observe = 5
 sampleTime = 1
 timeYellow = 2

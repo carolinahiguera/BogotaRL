@@ -21,12 +21,14 @@ import numpy as np
 import math
 import var
 import gets
+import time
 
 dfRewVals = {}
 dfQueueTracker = {}
 dfWaitingTracker = {} 
 dfActions = {}
 dfEpsilon = {}
+path = '~/Documents/BogotaRL/ind_QLearning/csv_files_train/'
 
 def saveData(currSod):
 	global dfQueueTracker, dfWaitingTracker, dfRewVals, dfActions, dfEpsilon
@@ -61,21 +63,21 @@ def saveData(currSod):
 	dfEpsilon = dfEpsilon.append(df, ignore_index=True)
 
 def data2files(day):
-	global dfQueueTracker, dfWaitingTracker, dfRewVals, dfActions, dfEpsilon
+	global dfQueueTracker, dfWaitingTracker, dfRewVals, dfActions, dfEpsilon, path
 	#Save actions and epsilons in file
 	aux = ['sec']
 	for tls in var.agent_TLS.keys():
 		aux.append(tls)
 	dfActions.columns = aux
 	dfEpsilon.columns = aux
-	dfActions.to_csv('./csv_files_train/indQ_actions_day' + str(day) + '.csv')
-	dfEpsilon.to_csv('./csv_files_train/indQ_epsilon_day' + str(day) + '.csv')
+	dfActions.to_csv(path + 'indQ_actions_day' + str(day) + '.csv')
+	dfEpsilon.to_csv(path + 'indQ_epsilon_day' + str(day) + '.csv')
 	
 	#Save rewards in file
 	aux = ['sec', 'rew1', 'rew2']
 	for tls in var.agent_TLS.keys():
 		dfRewVals[tls].columns = aux
-		dfRewVals[tls].to_csv('./csv_files_train/indQ_rewards_' + str(tls) + '_day' + str(day) + '.csv')
+		dfRewVals[tls].to_csv(path + 'indQ_rewards_' + str(tls) + '_day' + str(day) + '.csv')
 	
 	#Save queues and times for each junction
 	for j in var.junctions.keys():
@@ -84,18 +86,18 @@ def data2files(day):
 			aux.append(edge)
 		dfQueueTracker[j].columns = aux
 		dfWaitingTracker[j].columns = aux
-		dfQueueTracker[j].to_csv('./csv_files_train/indQ_queues_' + var.junctions[j].name + '_day' + str(day) + '.csv')
-		dfWaitingTracker[j].to_csv('./csv_files_train/indQ_times_' + var.junctions[j].name + '_day' + str(day) + '.csv')
+		dfQueueTracker[j].to_csv(path + 'indQ_queues_' + var.junctions[j].name + '_day' + str(day) + '.csv')
+		dfWaitingTracker[j].to_csv(path + 'indQ_times_' + var.junctions[j].name + '_day' + str(day) + '.csv')
 		
 	#Save learning for each agent
 	for tls in var.agent_TLS.keys():
-		var.agent_TLS[tls].saveLearning(day)
+		var.agent_TLS[tls].saveLearning(day, path)
 
 
 def debug_phase(tls, currSod):
 	ryg_state = traci.trafficlight.getRedYellowGreenState(str(tls))
 	p_index = var.agent_TLS[tls].phases.index(ryg_state)
-	print('Sec: '+str(currSod) + '   Phase: '+str(p_index))
+	print('Sec: '+str(currSod) + '   Phase: '+str(ryg_state))
 
 
 def ind_QLearning():  
@@ -120,43 +122,37 @@ def ind_QLearning():
 			dfWaitingTracker[j] = pd.DataFrame()  
 		for tls in var.agent_TLS.keys():
 			dfRewVals[tls] = pd.DataFrame()
-			var.agent_TLS[tls].initialize()
+			var.agent_TLS[tls].ini4learning()
 		
 		#Begins simulation of 1 day           
 		for currSod in range(0,var.secondsInDay):
 			if(currSod == 0):  
 				gets.getObservation()
-				for tls in var.agent_TLS:                    
-					var.agent_TLS[tls].getState()
-					traci.trafficlight.setRedYellowGreenState(str(tls), var.agent_TLS[tls].RedYellowGreenState)
+				for tls in var.agent_TLS.keys():                    
+					var.agent_TLS[tls].getState(currSod)
+					traci.trafficlight.setRedYellowGreenState(tls, var.agent_TLS[tls].RedYellowGreenState)
 			else:    
 				#Sample the system
 				if(currSod%var.sampleTime == 0):
-					#Update last state-action
-					for tls in var.agent_TLS:
-						var.agent_TLS[tls].updateStateAction()
 					#Get new state    
 					gets.getObservation()  
 					#Update rewards and update policy             
 					for tls in var.agent_TLS.keys():
 						var.agent_TLS[tls].updateReward1()
-						var.agent_TLS[tls].updateReward2()  
+						#var.agent_TLS[tls].updateReward2()  
 						#Q-Learning
 						if var.agent_TLS[tls].finishPhase[1]:
-							#print('learning')
-							var.agent_TLS[tls].learnPolicy()
+							var.agent_TLS[tls].updateStateAction()
+							var.agent_TLS[tls].learnPolicy(currSod)
 							var.agent_TLS[tls].getAction(day, currSod)
 					saveData(currSod)  
 				
-				for tls in var.agent_TLS:
-					var.agent_TLS[tls].setPhase(currSod)
-					traci.trafficlight.setRedYellowGreenState(str(tls), 
-						var.agent_TLS[tls].RedYellowGreenState)
+			for tls in var.agent_TLS.keys():
+				var.agent_TLS[tls].setPhase(currSod)
+				traci.trafficlight.setRedYellowGreenState(tls, var.agent_TLS[tls].RedYellowGreenState)
 
-				debug_phase('tls_14_45', currSod)
-				
 			traci.simulationStep()
-				
+			#debug_phase('tls_14_45', currSod)				
 				
 		traci.close()
 		#End simulation of 1 day

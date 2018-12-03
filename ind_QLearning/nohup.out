@@ -1,0 +1,23 @@
+Traceback (most recent call last):
+  File "main.py", line 12, in <module>
+    import testing
+  File "/home/carolina/Documents/repos/BogotaRL/ind_QLearning/testing.py", line 16, in <module>
+    import traci0
+ModuleNotFoundError: No module named 'traci0'
+Traceback (most recent call last):
+  File "main.py", line 12, in <module>
+    import testing
+  File "/home/carolina/Documents/repos/BogotaRL/ind_QLearning/testing.py", line 16, in <module>
+    import traci0
+ModuleNotFoundError: No module named 'traci0'
+Loading configuration... done.
+Loading configuration... done.
+Loading configuration... done.
+Loading configuration... done.
+Loading configuration... done.
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+ Retrying in 1 seconds
+end training

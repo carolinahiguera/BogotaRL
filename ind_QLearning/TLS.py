@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import random
 from scipy.cluster.vq import vq, kmeans, whiten
+path = '~/Documents/BogotaRL/ind_QLearning/csv_files_obs/'
 
 class TLS(object):
 	'''
@@ -53,7 +54,7 @@ class TLS(object):
 		self.QAlpha ={}
 		
 		#Discretizacion de espacio de estados
-		self.numStates = 0
+		self.numStates = None
 		self.numActions = len(self.actionPhases)
 		self.codebook = None
 		self.normalize = None
@@ -90,7 +91,42 @@ class TLS(object):
 		random.seed(seed)
 		self.currAction = random.randint(0,len(self.actionPhases)-1) 
 		self.RedYellowGreenState = self.phases[self.currAction]
-		self.finishAuxPhase = True
+		self.finishPhase = [-1, True]
+
+	def ini4learning(self):
+		aux = []
+		df = pd.read_csv(path+'codebook_'+self.ID+'.csv')
+		data = df.values
+		self.numStates = len(data)
+		for i in range(0,len(data)):
+			aux.append(np.delete(data[i],0))
+		self.codebook = np.array(aux)
+		aux = []
+		df = pd.read_csv(path+'normalize_'+self.ID+'.csv')
+		data = df.values
+		for i in range(0,len(data)):
+			aux.append(data[i][1])
+		self.normalize = np.array(aux)
+
+		for j in range(0,len(self.listJunctions)):
+			jName = self.listJunctions[j]
+			self.queueEdgeTracker[j] = np.zeros(len(var.junctions[jName].edges))
+			self.waitingEdgeTracker[j] = np.zeros(len(var.junctions[jName].edges)) #EN MINUTOS
+			self.speedEdgeTracker[j] = np.zeros(len(var.junctions[jName].edges))
+			for e in range(0,len(var.junctions[jName].edges)):
+				self.queueLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e]))
+				self.waitingLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e])) #EN MINUTOS
+				self.speedLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e]))
+				
+		self.QValues = np.zeros((self.numStates,self.numActions))
+		self.QCounts = np.zeros((self.numStates,self.numActions))
+		self.QAlpha = np.ones((self.numStates,self.numActions))				     
+		
+		seed = random.random()
+		random.seed(seed)
+		self.currAction = random.randint(0,len(self.actionPhases)-1) 
+		self.RedYellowGreenState = self.phases[self.currAction]
+		self.finishPhase = [0, False]
 	
 	def updateStateAction(self):
 		self.lastAction = self.currAction
@@ -116,7 +152,7 @@ class TLS(object):
 				reward -= a*b
 		self.currReward2 = reward
 	
-	def getState2(self,currSod):
+	def getState(self,currSod):
 		state = [int(currSod/3600)+6]
 		for j in range(0,len(self.listJunctions)):
 			jID = self.listJunctions[j]
@@ -128,21 +164,21 @@ class TLS(object):
 		self.currState = vq(state, self.codebook)[0][0]
 
 
-	def getState(self):
-		state = []
-		for j in range(0,len(self.listJunctions)):
-			jID = self.listJunctions[j]
-			for e in range(0,len(var.junctions[jID].edges)):
-				state.append(self.queueEdgeTracker[j][e])
-			for e in range(0,len(var.junctions[jID].edges)):
-				state.append(self.waitingEdgeTracker[j][e])        
-		state = np.array(state)
-		stateID = int(self.dictClusterObjects.predict(state.reshape(1,-1)))
-		self.currState = self.mapDiscreteStates[stateID]
+	# def getState(self):
+	# 	state = []
+	# 	for j in range(0,len(self.listJunctions)):
+	# 		jID = self.listJunctions[j]
+	# 		for e in range(0,len(var.junctions[jID].edges)):
+	# 			state.append(self.queueEdgeTracker[j][e])
+	# 		for e in range(0,len(var.junctions[jID].edges)):
+	# 			state.append(self.waitingEdgeTracker[j][e])        
+	# 	state = np.array(state)
+	# 	stateID = int(self.dictClusterObjects.predict(state.reshape(1,-1)))
+	# 	self.currState = self.mapDiscreteStates[stateID]
 		
 	
-	def learnPolicy(self):
-		self.getState()
+	def learnPolicy(self, currSod):
+		self.getState(currSod)
 		s = self.lastState
 		a = self.lastAction
 		s_ = self.currState
@@ -172,6 +208,10 @@ class TLS(object):
 			self.currAction = opt_act[idx]
 		self.finishPhase = [sec, False]
 
+	def changeAction(self, sec, action):
+		self.currAction = action
+		self.finishPhase = [sec, False]
+
 	def setPhase(self, currSod):
 		aux_phase = self.auxPhases[self.lastAction][self.currAction]
 		if(not(type(aux_phase)==list)):
@@ -187,16 +227,22 @@ class TLS(object):
 				if currSod > (self.finishPhase[0]+var.minTimeGreen):
 					self.finishPhase = [-1, True]
 		else:
+			#print(self.ID + '  ' + str(aux_phase))
 			if currSod <= self.finishPhase[0]+var.timeYellow:
 				self.RedYellowGreenState = self.phases[aux_phase[0]]
+			#	print('aca1' + '  ' + self.RedYellowGreenState)
 			elif (currSod > self.finishPhase[0]+var.timeYellow) and (currSod <= self.finishPhase[0]+(2*var.timeYellow)):
 				self.RedYellowGreenState = self.phases[aux_phase[1]]
-			elif (currSod > self.finishPhase[0]+var.timeYellow) and (currSod <= self.finishPhase[0]+(3*var.timeYellow)):
+			#	print('aca2' + '  ' + self.RedYellowGreenState)
+			elif (currSod > self.finishPhase[0]+(2*var.timeYellow)) and (currSod <= self.finishPhase[0]+(3*var.timeYellow)):
 				self.RedYellowGreenState = self.phases[aux_phase[2]]
+			#	print('aca3' + '  ' + self.RedYellowGreenState)
 			elif (currSod > self.finishPhase[0]+(3*var.timeYellow)) and (currSod <= self.finishPhase[0]+(3*var.timeYellow)+var.minTimeGreen):
 				self.RedYellowGreenState = self.phases[self.currAction]
+			#	print('aca4' + '  ' + self.RedYellowGreenState)
 			else:
 				self.finishPhase = [-1, True]
+			#	print('aca5')
 			
 	def applyPolicy(self, sec):
 		self.lastAction = self.currAction
@@ -210,10 +256,10 @@ class TLS(object):
 				self.setInYellow = sec
 				self.finishAuxPhase = False
 	
-	def saveLearning(self, day):        
-		df = pd.DataFrame(self.QValues); df.to_csv('./csv_files_learning/QValues_' + str(self.ID) + '_day' + str(day) +'.csv')
-		df = pd.DataFrame(self.QAlpha); df.to_csv('./csv_files_learning/QAlphas_' + str(self.ID) + '_day' + str(day) +'.csv')
-		df = pd.DataFrame(self.QCounts); df.to_csv('./csv_files_learning/QCounts_' + str(self.ID) + '_day' + str(day) +'.csv')
+	def saveLearning(self, day, path):        
+		df = pd.DataFrame(self.QValues); df.to_csv(path + 'QValues_' + str(self.ID) + '_day' + str(day) +'.csv')
+		df = pd.DataFrame(self.QAlpha); df.to_csv(path + 'QAlphas_' + str(self.ID) + '_day' + str(day) +'.csv')
+		df = pd.DataFrame(self.QCounts); df.to_csv(path + 'QCounts_' + str(self.ID) + '_day' + str(day) +'.csv')
 			
 	
 	
