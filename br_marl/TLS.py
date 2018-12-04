@@ -7,8 +7,9 @@ import var
 import numpy as np
 import pandas as pd
 import random
+import itertools
 from scipy.cluster.vq import vq, kmeans, whiten
-path = '~/Documents/BogotaRL/ind_QLearning/csv_files_obs/'
+path = '~/Documents/BogotaRL/br_marl/csv_files_obs/'
 
 class TLS(object):
 	'''
@@ -36,9 +37,11 @@ class TLS(object):
 		self.currReward = 0
 		self.currReward2 = 0
 		self.currAction = -1
-		self.currState = -1
 		self.lastAction = -1
-		self.lastState = -1
+		self.currJointAction = {}
+		self.currJointState = {}
+		self.lastJointAction = {}
+		self.lastJointState = {}
 		self.RedYellowGreenState = ''
 		self.beta = beta
 		self.theta = theta        
@@ -53,6 +56,8 @@ class TLS(object):
 		self.QValues = {}
 		self.QCounts = {}
 		self.QAlpha ={}
+		self.M = {}
+		self.V = {}
 		
 		#Discretizacion de espacio de estados       
 		self.numActions = len(self.actionPhases)
@@ -67,6 +72,15 @@ class TLS(object):
 			self.numJointStates[nb] = None
 			self.jointActions[nb] = None
 			self.numJointActions[nb] = None
+			self.QValues[nb] = None
+			self.QCounts[nb] = None
+			self.QAlpha[nb] =None
+			self.M[nb] = None
+			self.V[nb] = None
+			self.currJointAction[nb] = None
+			self.currJointState[nb] = None
+			self.lastJointAction[nb] = None
+			self.lastJointState[nb] = None
 		
 		for j in range(0,len(self.listJunctions)):
 			jName = self.listJunctions[j]
@@ -90,12 +104,7 @@ class TLS(object):
 			for e in range(0,len(var.junctions[jName].edges)):
 				self.queueLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e]))
 				self.waitingLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e])) #EN MINUTOS
-				self.speedLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e]))
-				
-		# self.QValues = np.zeros((self.numStates,self.numActions))
-		# self.QCounts = np.zeros((self.numStates,self.numActions))
-		# self.QAlpha = np.ones((self.numStates,self.numActions))     
-		
+				self.speedLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e]))				
 		seed = random.random()
 		random.seed(seed)
 		self.currAction = random.randint(0,len(self.actionPhases)-1) 
@@ -103,19 +112,31 @@ class TLS(object):
 		self.finishPhase = [-1, True]
 
 	def ini4learning(self):
-		aux = []
-		df = pd.read_csv(path+'codebook_'+self.ID+'.csv')
-		data = df.values
-		self.numStates = len(data)
-		for i in range(0,len(data)):
-			aux.append(np.delete(data[i],0))
-		self.codebook = np.array(aux)
-		aux = []
-		df = pd.read_csv(path+'normalize_'+self.ID+'.csv')
-		data = df.values
-		for i in range(0,len(data)):
-			aux.append(data[i][1])
-		self.normalize = np.array(aux)
+		for nb in self.neighbors:
+			aux = []
+			df = pd.read_csv(path+'codebook_'+self.ID+'_'+nb+'.csv')
+			data = df.values
+			self.numJointStates[nb] = len(data)
+			for i in range(0,len(data)):
+				aux.append(np.delete(data[i],0))
+			self.codebook[nb] = np.array(aux)
+			aux = []
+			df = pd.read_csv(path+'normalize_'+self.ID+'_'+nb+'.csv')
+			data = df.values
+			for i in range(0,len(data)):
+				aux.append(data[i][1])
+			self.normalize[nb] = np.array(aux)
+
+			self.jointActions[nb] = list(itertools.product(self.actionPhases, var.agent_TLS[nb].actionPhases))
+			self.numJointActions[nb] = len(self.jointActions[nb])
+
+			self.QValues[nb] = np.zeros((self.numJointStates[nb],self.numJointActions[nb]))
+			self.QCounts[nb] = np.zeros((self.numJointStates[nb],self.numJointActions[nb]))
+			self.QAlpha[nb] = np.ones((self.numJointStates[nb],self.numJointActions[nb]))
+			nbAct = len(var.agent_TLS[nb].actionPhases)
+			self.V[nb] = np.zeros((self.numJointStates[nb],nbAct))
+			self.M[nb] = np.ones((self.numJointStates[nb],nbAct))/nbAct
+
 
 		for j in range(0,len(self.listJunctions)):
 			jName = self.listJunctions[j]
@@ -126,20 +147,19 @@ class TLS(object):
 				self.queueLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e]))
 				self.waitingLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e])) #EN MINUTOS
 				self.speedLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e]))
-				
-		self.QValues = np.zeros((self.numStates,self.numActions))
-		self.QCounts = np.zeros((self.numStates,self.numActions))
-		self.QAlpha = np.ones((self.numStates,self.numActions))                  
 		
 		seed = random.random()
 		random.seed(seed)
 		self.currAction = random.randint(0,len(self.actionPhases)-1) 
+		self.lastAction = self.currAction
 		self.RedYellowGreenState = self.phases[self.currAction]
 		self.finishPhase = [0, False]
 	
 	def updateStateAction(self):
 		self.lastAction = self.currAction
-		self.lastState = self.currState        
+		for nb in self.neighbors:
+			self.lastJointAction[nb] = self.currJointAction[nb]
+			self.lastJointState[nb] = self.currJointState[nb]        
 	
 	def updateReward1(self):
 		reward = 0
@@ -161,43 +181,71 @@ class TLS(object):
 				reward -= a*b
 		self.currReward2 = reward
 	
-	def getState(self,currSod):
-		state = [int(currSod/3600)+6]
-		for j in range(0,len(self.listJunctions)):
-			jID = self.listJunctions[j]
-			for e in range(0,len(var.junctions[jID].edges)):
-				state.append(self.queueEdgeTracker[j][e])
-			for e in range(0,len(var.junctions[jID].edges)):
-				state.append(self.waitingEdgeTracker[j][e])        
-		state = np.array([state/self.normalize]) #verificar
-		self.currState = vq(state, self.codebook)[0][0]
 
+	def getObservation_NB(self, nb, currSod):
+	    #estado del agente tls
+	    stateDataEntry = [int(currSod/3600)+6]
+	    for j in range(0,len(var.agent_TLS[self.ID].listJunctions)):
+	        jID = var.agent_TLS[self.ID].listJunctions[j]
+	        for e in range(0,len(var.junctions[jID].edges)):
+	            stateDataEntry.append(var.agent_TLS[self.ID].queueEdgeTracker[j][e])
+	    for j in range(0,len(var.agent_TLS[self.ID].listJunctions)):
+	        jID = var.agent_TLS[self.ID].listJunctions[j]
+	        for e in range(0,len(var.junctions[jID].edges)):
+	            stateDataEntry.append(var.agent_TLS[self.ID].waitingEdgeTracker[j][e])
+	   #estado de su vecino
+	    if(nb != -1):
+	        for j in range(0,len(var.agent_TLS[nb].listJunctions)):
+	            jID = var.agent_TLS[nb].listJunctions[j]
+	            for e in range(0,len(var.junctions[jID].edges)):
+	                stateDataEntry.append(var.agent_TLS[nb].queueEdgeTracker[j][e])
+	        for j in range(0,len(var.agent_TLS[nb].listJunctions)):
+	            jID = var.agent_TLS[nb].listJunctions[j]
+	            for e in range(0,len(var.junctions[jID].edges)):
+	                stateDataEntry.append(var.agent_TLS[nb].waitingEdgeTracker[j][e])
+	    return stateDataEntry
 
-	# def getState(self):
-	#   state = []
-	#   for j in range(0,len(self.listJunctions)):
-	#       jID = self.listJunctions[j]
-	#       for e in range(0,len(var.junctions[jID].edges)):
-	#           state.append(self.queueEdgeTracker[j][e])
-	#       for e in range(0,len(var.junctions[jID].edges)):
-	#           state.append(self.waitingEdgeTracker[j][e])        
-	#   state = np.array(state)
-	#   stateID = int(self.dictClusterObjects.predict(state.reshape(1,-1)))
-	#   self.currState = self.mapDiscreteStates[stateID]
-		
+	def getJointState(self,currSod):
+		for nb in self.neighbors:
+			state = self.getObservation_NB(nb, currSod)
+			state = np.array([state/self.normalize[nb]]) #verificar
+			self.currJointState[nb] = vq(state, self.codebook[nb])[0][0]
+
+	def getJointAction(self):
+		act_i = self.currAction
+		for nb in self.neighbors:
+			act_j = var.agent_TLS[nb].currAction
+			jAct = (act_i, act_j)
+			self.currJointAction[nb] = self.jointActions[nb].index(jAct)	
+
+	def getBR(self, nb, s):
+		QM = np.zeros([len(self.actionPhases)])
+		for act_i in self.actionPhases:
+			for act_j in var.agent_TLS[nb].actionPhases:
+				aij = self.jointActions[nb].index((act_i, act_j))
+				QM[act_i] += self.QValues[nb][s,aij] * self.M[nb][s,act_j]
+		br = np.max(QM)
+		return br
+
 	
 	def learnPolicy(self, currSod):
-		self.getState(currSod)
-		s = self.lastState
-		a = self.lastAction
-		s_ = self.currState
-		r = self.currReward
-		alpha = self.QAlpha[s,a]
-		lastQ = self.QValues[s,a]
-		maxQ = max(self.QValues[s_, ])
-		self.QValues[s,a] = lastQ + alpha*(r + self.gamma*maxQ - lastQ)
-		self.QCounts[s,a] += 1.0
-		self.QAlpha[s,a] = 1.0/self.QCounts[s,a]
+		self.getJointState(currSod)
+		for nb in self.neighbors:
+			s = self.lastJointState[nb]
+			a = self.lastJointAction[nb]
+			s_ = self.currJointState[nb]
+			r = self.currReward
+
+			act_j = self.jointActions[nb][a][1]
+			self.V[nb][s, act_j] += 1.0
+			self.M[nb][s, ] = self.V[nb][s, ] / np.sum(self.V[nb][s,])
+
+			br = self.getBR(nb, s_)
+			alpha = self.QAlpha[nb][s,a]
+			lastQ = self.QValues[nb][s,a]
+			self.QValues[nb][s,a] = lastQ + alpha*(r + self.gamma*br - lastQ)
+			self.QCounts[nb][s,a] += 1.0
+			self.QAlpha[nb][s,a] = 1.0/self.QCounts[nb][s,a]
 	
 	def getAction(self, day, sec):
 		min = int(round(sec/60.0))
@@ -209,12 +257,14 @@ class TLS(object):
 		if(unigen < self.epsilon):
 			#Explorar
 			self.currAction = random.randint(0,len(self.actionPhases)-1) 
-		else: 
-			#Explotar
-			Qmax = max(self.QValues[self.currState, ])
-			opt_act = [x for x in range(0,self.numActions) if self.QValues[self.currState,x]==Qmax]
-			idx = random.randint(0,len(opt_act)-1) 
-			self.currAction = opt_act[idx]
+		else:
+			QM = np.zeros([len(self.actionPhases)])
+			for act_i in self.actionPhases:
+				for nb in self.neighbors:
+					for act_j in var.agent_TLS[nb].actionPhases:
+						aij = self.jointActions[nb].index((act_i, act_j))
+						QM[act_i] += self.QValues[nb][s,aij] * self.M[nb][s,act_j]
+			self.currAction = np.argmax(QM)
 		self.finishPhase = [sec, False]
 
 	def changeAction(self, sec, action):
@@ -265,10 +315,13 @@ class TLS(object):
 				self.setInYellow = sec
 				self.finishAuxPhase = False
 	
-	def saveLearning(self, day, path):        
-		df = pd.DataFrame(self.QValues); df.to_csv(path + 'QValues_' + str(self.ID) + '_day' + str(day) +'.csv')
-		df = pd.DataFrame(self.QAlpha); df.to_csv(path + 'QAlphas_' + str(self.ID) + '_day' + str(day) +'.csv')
-		df = pd.DataFrame(self.QCounts); df.to_csv(path + 'QCounts_' + str(self.ID) + '_day' + str(day) +'.csv')
+	def saveLearning(self, day, path):  
+		for nb in self.neighbors:      
+			df = pd.DataFrame(self.QValues[nb]); df.to_csv(path + 'QValues_' + str(self.ID) +'_' + nb + '_day' + str(day) +'.csv')
+			df = pd.DataFrame(self.QAlpha[nb]); df.to_csv(path + 'QAlphas_' + str(self.ID) +'_' + nb + '_day' + str(day) +'.csv')
+			df = pd.DataFrame(self.QCounts[nb]); df.to_csv(path + 'QCounts_' + str(self.ID) +'_' + nb + '_day' + str(day) +'.csv')
+			df = pd.DataFrame(self.M[nb]); df.to_csv(path + 'M_' + str(self.ID) +'_' + nb + '_day' + str(day) +'.csv')
+			df = pd.DataFrame(self.V[nb]); df.to_csv(path + 'V_' + str(self.ID) +'_' + nb + '_day' + str(day) +'.csv')
 			
 	
 	

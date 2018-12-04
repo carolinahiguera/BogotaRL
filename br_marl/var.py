@@ -19,8 +19,8 @@ sampleTime = 1
 timeYellow = 2
 minTimeGreen = 9#tipico entre 6 y 10seg
 min_numStates = 10
-beta = [0.5, 2.0]
-theta = [1.75, 3.0]
+beta = [1.0, 2.0]
+theta = [1.75, 1.75]
 exp = [2.0, 1.5]
 
 #====================== Juntion properties ======================
