@@ -14,7 +14,7 @@ if 'SUMO_HOME' in os.environ:
 else:   
 	sys.exit("please declare environment variable 'SUMO_HOME'")
 import traci
-sumoBinary = "sumo" #sumo-gui
+sumoBinary = "sumo-gui" #sumo-gui
 import random
 import pandas as pd
 import numpy as np
@@ -99,6 +99,22 @@ def debug_phase(tls, currSod):
 	p_index = var.agent_TLS[tls].phases.index(ryg_state)
 	print('Sec: '+str(currSod) + '   Phase: '+str(ryg_state))
 
+def ini_dataframes():
+	global dfQueueTracker, dfWaitingTracker, dfRewVals, dfActions, dfEpsilon  
+	dfRewVals = {}
+	dfQueueTracker = {}
+	dfWaitingTracker = {} 
+	rows = round(var.secondsInDay/var.sampleTime)
+	for j in var.junctions.keys():
+		cols = len(var.junctions[j].edges) + 1
+		dfQueueTracker[j] = pd.DataFrame(index=range(rows), columns=range(cols))
+		dfWaitingTracker[j] = pd.DataFrame(index=range(rows), columns=range(cols))
+	for tls in var.agent_TLS.keys():
+		dfRewVals[tls] = pd.DataFrame(index=range(rows), columns=range(2))
+	dfActions = pd.DataFrame(index=range(rows), columns=range(1+len(var.agent_TLS)))
+	dfEpsilon = pd.DataFrame(index=range(rows), columns=range(1+len(var.agent_TLS)))
+
+
 
 def br_marl_learning():  
 	global dfQueueTracker, dfWaitingTracker, dfRewVals, dfActions, dfEpsilon  
@@ -134,21 +150,35 @@ def br_marl_learning():
 					traci.trafficlight.setRedYellowGreenState(tls, var.agent_TLS[tls].RedYellowGreenState)
 			else:    
 				#Sample the system
-				if(currSod%var.sampleTime == 0):
-					#Get data from each TLS  
-					gets.getObservation()  
-					#Update rewards and update policy             
-					for tls in var.agent_TLS.keys():
+
+				gets.getObservation2(currSod)
+
+				for tls in var.agent_TLS.keys():
+					if var.agent_TLS[tls].finishPhase[1]:
 						var.agent_TLS[tls].updateReward1()
-						#var.agent_TLS[tls].updateReward2()  
-						#Q-Learning
-						if var.agent_TLS[tls].finishPhase[1]:
-							var.agent_TLS[tls].updateStateAction()
-							var.agent_TLS[tls].learnPolicy(currSod)
-							var.agent_TLS[tls].getAction(day, currSod)
-					for tls in var.agent_TLS.keys():
+						var.agent_TLS[tls].updateStateAction()
+						var.agent_TLS[tls].learnPolicy(currSod)
+						var.agent_TLS[tls].getAction(day, currSod)
+				for tls in var.agent_TLS.keys():
 						var.agent_TLS[tls].getJointAction()
-					saveData(currSod)  
+
+
+				# if(currSod%var.sampleTime == 0):
+				# 	#Get data from each TLS  
+				# 	gets.getObservation()  
+				# 	#Update rewards and update policy             
+				# 	for tls in var.agent_TLS.keys():
+				# 		var.agent_TLS[tls].updateReward1()
+				# 		#var.agent_TLS[tls].updateReward2()  
+				# 		#Q-Learning
+				# 		if var.agent_TLS[tls].finishPhase[1]:
+
+				# 			var.agent_TLS[tls].updateStateAction()
+				# 			var.agent_TLS[tls].learnPolicy(currSod)
+				# 			var.agent_TLS[tls].getAction(day, currSod)
+				# 	for tls in var.agent_TLS.keys():
+				# 		var.agent_TLS[tls].getJointAction()
+				# 	# saveData(currSod)  
 				
 			for tls in var.agent_TLS.keys():
 				var.agent_TLS[tls].setPhase(currSod)
@@ -161,7 +191,7 @@ def br_marl_learning():
 		traci.close()
 		#End simulation of 1 day
 		
-		data2files(day)
+		# data2files(day)
 	#-----------------------------------------------------
 	fileOut = open("days.csv","w")
 	fileOut.write("End training \n")

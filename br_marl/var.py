@@ -12,10 +12,10 @@ global port, secondsInDay, episodes, sampleTime
 #avilable_ports = [8813, 8814, 8815, 8816, 8817, 8818, 8819, 8820] 
 #port = avilable_ports[2]
 
-secondsInDay = 46800
-episodes = 500
+secondsInDay = 46800#46800
+episodes = 200
 days2Observe = 5
-sampleTime = 1
+sampleTime = 10
 timeYellow = 2
 minTimeGreen = 9#tipico entre 6 y 10seg
 min_numStates = 10

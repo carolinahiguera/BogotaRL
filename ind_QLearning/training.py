@@ -14,7 +14,7 @@ if 'SUMO_HOME' in os.environ:
 else:   
 	sys.exit("please declare environment variable 'SUMO_HOME'")
 import traci
-sumoBinary = "sumo" #sumo-gui
+sumoBinary = "sumo-gui" #sumo-gui
 import random
 import pandas as pd
 import numpy as np
@@ -145,7 +145,7 @@ def ind_QLearning():
 							var.agent_TLS[tls].updateStateAction()
 							var.agent_TLS[tls].learnPolicy(currSod)
 							var.agent_TLS[tls].getAction(day, currSod)
-					saveData(currSod)  
+					#saveData(currSod)  
 				
 			for tls in var.agent_TLS.keys():
 				var.agent_TLS[tls].setPhase(currSod)
@@ -157,7 +157,7 @@ def ind_QLearning():
 		traci.close()
 		#End simulation of 1 day
 		
-		data2files(day)
+		#data2files(day)
 	#-----------------------------------------------------
 	fileOut = open("days.csv","w")
 	fileOut.write("End training \n")

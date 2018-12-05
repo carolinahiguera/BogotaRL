@@ -252,7 +252,8 @@ class TLS(object):
 		seed = (1.0*day)+(sec/60.0)
 		random.seed(seed)
 		unigen = random.random()        
-		self.epsilon = np.exp(-(1.0/180.0)*((1.0*day)+(min/60.0))) 
+		#self.epsilon = np.exp(-(1.0/180.0)*((1.0*day)+(min/60.0))) 
+		self.epsilon = np.exp(-(1.0/130.0)*((1.0*day)+(min/60.0))) 
 		
 		if(unigen < self.epsilon):
 			#Explorar
@@ -261,6 +262,7 @@ class TLS(object):
 			QM = np.zeros([len(self.actionPhases)])
 			for act_i in self.actionPhases:
 				for nb in self.neighbors:
+					s = self.currJointState[nb]
 					for act_j in var.agent_TLS[nb].actionPhases:
 						aij = self.jointActions[nb].index((act_i, act_j))
 						QM[act_i] += self.QValues[nb][s,aij] * self.M[nb][s,act_j]

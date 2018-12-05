@@ -16,7 +16,7 @@ else:
 	sys.exit("please declare environment variable 'SUMO_HOME'")
 
 import traci
-sumoBinary = "sumo" #sumo-gui
+sumoBinary = "sumo-gui" #sumo-gui
 
 import random
 import pandas as pd
