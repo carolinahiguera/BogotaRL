@@ -24,21 +24,20 @@ class edgeTLS():
         self.TLS_j = pair_TLS[1]
         self.jointActions = list(itertools.product( var.agent_TLS[self.TLS_i].actionPhases, var.agent_TLS[self.TLS_j].actionPhases ))
         self.numJointActions = len(self.jointActions)
-        self.numJointStates = 0
+        self.numJointStates = None
         
         #Learning parameters
         self.gamma = 0.95
         self.epsilon = 0.2
         
         #Almacenar discretizacion de estados
-        self.dictClusterObjects = {}
-        self.numClustersTracker = {}            
-        self.mapDiscreteStates = {}
+        self.codebook = None
+        self.normalize = None
         
         #QValues, QCounts, QAlphas
-        self.QValues  = {}
-        self.QCounts = {}
-        self.QAlphas = {}
+        self.QValues  = None
+        self.QCounts = None
+        self.QAlphas = None
         
         #joint state and action
         self.currJointState = -1

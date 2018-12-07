@@ -10,7 +10,8 @@ import var
 import itertools
 
 def getJointAct():
-    elim_order = np.array([230, 231, 282, 232, 218, 233, 219, 235, 220, 221, 209, 210])
+    elim_order = np.array(['tls_7_53', 'tls_9_53', 'tls_7_49', 'tls_7_47', 'tls_7_46',
+                           'tls_7_45', 'tls_14_53', ''])
     joint_act = {}
     g={}
     tls_neighbors = {}

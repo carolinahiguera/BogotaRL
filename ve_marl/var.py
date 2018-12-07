@@ -7,6 +7,9 @@ import junction
 exec(open("./junction.py").read())
 import TLS
 exec(open("./TLS.py").read())
+import edgeTLS
+exec(open("./edgeTLS.py").read())
+
 
 global port, secondsInDay, episodes, sampleTime
 #avilable_ports = [8813, 8814, 8815, 8816, 8817, 8818, 8819, 8820] 
@@ -14,7 +17,7 @@ global port, secondsInDay, episodes, sampleTime
 
 secondsInDay = 46800#46800
 episodes = 200
-days2Observe = 5
+days2Observe = 1
 sampleTime = 10
 timeYellow = 2
 minTimeGreen = 9#tipico entre 6 y 10seg
