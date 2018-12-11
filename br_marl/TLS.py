@@ -10,6 +10,7 @@ import random
 import itertools
 from scipy.cluster.vq import vq, kmeans, whiten
 path = '~/Documents/BogotaRL/br_marl/csv_files_obs/'
+path2 = '~/Documents/BogotaRL/br_marl/csv_files_train/'
 
 class TLS(object):
 	'''
@@ -136,6 +137,54 @@ class TLS(object):
 			nbAct = len(var.agent_TLS[nb].actionPhases)
 			self.V[nb] = np.zeros((self.numJointStates[nb],nbAct))
 			self.M[nb] = np.ones((self.numJointStates[nb],nbAct))/nbAct
+
+
+		for j in range(0,len(self.listJunctions)):
+			jName = self.listJunctions[j]
+			self.queueEdgeTracker[j] = np.zeros(len(var.junctions[jName].edges))
+			self.waitingEdgeTracker[j] = np.zeros(len(var.junctions[jName].edges)) #EN MINUTOS
+			self.speedEdgeTracker[j] = np.zeros(len(var.junctions[jName].edges))
+			for e in range(0,len(var.junctions[jName].edges)):
+				self.queueLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e]))
+				self.waitingLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e])) #EN MINUTOS
+				self.speedLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e]))
+		
+		seed = random.random()
+		random.seed(seed)
+		self.currAction = random.randint(0,len(self.actionPhases)-1) 
+		self.lastAction = self.currAction
+		self.RedYellowGreenState = self.phases[self.currAction]
+		self.finishPhase = [0, False]
+
+	def ini4testing(self):
+		for nb in self.neighbors:
+			aux = []
+			df = pd.read_csv(path+'codebook_'+self.ID+'_'+nb+'.csv')
+			data = df.values
+			self.numJointStates[nb] = len(data)
+			for i in range(0,len(data)):
+				aux.append(np.delete(data[i],0))
+			self.codebook[nb] = np.array(aux)
+			aux = []
+			df = pd.read_csv(path+'normalize_'+self.ID+'_'+nb+'.csv')
+			data = df.values
+			for i in range(0,len(data)):
+				aux.append(data[i][1])
+			self.normalize[nb] = np.array(aux)
+
+			self.jointActions[nb] = list(itertools.product(self.actionPhases, var.agent_TLS[nb].actionPhases))
+			self.numJointActions[nb] = len(self.jointActions[nb])
+
+			df = pd.read_csv(path2+'QValues_' + str(self.ID) +'_' + nb + '_day' + str(var.episodes-1) +'.csv')
+			self.QValues[nb] = df.values
+			df = pd.read_csv(path2+'QCounts_' + str(self.ID) +'_' + nb + '_day' + str(var.episodes-1) +'.csv')
+			self.QCounts[nb] = df.values
+			df = pd.read_csv(path2+'QAlphas_' + str(self.ID) +'_' + nb + '_day' + str(var.episodes-1) +'.csv')
+			self.QAlpha[nb] = df.values
+			df = pd.read_csv(path2+'V_' + str(self.ID) +'_' + nb + '_day' + str(var.episodes-1) +'.csv')
+			self.V[nb] = df.values
+			df = pd.read_csv(path2+'M_' + str(self.ID) +'_' + nb + '_day' + str(var.episodes-1) +'.csv')
+			self.M[nb] = df.values
 
 
 		for j in range(0,len(self.listJunctions)):
@@ -305,17 +354,18 @@ class TLS(object):
 				self.finishPhase = [-1, True]
 			#   print('aca5')
 			
-	def applyPolicy(self, sec):
+	def applyPolicy(self, sec):	
+		self.getJointState(sec)
+		QM = np.zeros([len(self.actionPhases)])
+		for act_i in self.actionPhases:
+			for nb in self.neighbors:
+				s = self.currJointState[nb]
+				for act_j in var.agent_TLS[nb].actionPhases:
+					aij = self.jointActions[nb].index((act_i, act_j))
+					QM[act_i] += self.QValues[nb][s,aij] * self.M[nb][s,act_j]
 		self.lastAction = self.currAction
-		self.currState = self.getState()
-		Qmax = max(self.QValues[self.currState, ])
-		opt_act = [x for x in range(0,self.numActions) if self.QValues[self.currState,x]==Qmax]
-		idx = random.randint(0,len(opt_act)-1) 
-		self.currAction = opt_act[idx]
-		if(sec > 0):
-			if(self.currAction != self.lastAction):
-				self.setInYellow = sec
-				self.finishAuxPhase = False
+		self.currAction = np.argmax(QM)
+		self.finishPhase = [sec, False]
 	
 	def saveLearning(self, day, path):  
 		for nb in self.neighbors:      

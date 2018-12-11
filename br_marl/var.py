@@ -14,6 +14,7 @@ global port, secondsInDay, episodes, sampleTime
 
 secondsInDay = 46800#46800
 episodes = 200
+episodesTest = 5
 days2Observe = 5
 sampleTime = 10
 timeYellow = 2
