@@ -28,7 +28,7 @@ dfQueueTracker = {}
 dfWaitingTracker = {} 
 dfSpeedTracker = {} 
 dfActions = {}
-path = '~/Documents/BogotaRL/br_marl/csv_files_test/'
+path = '~/Documents/BogotaRL/br_marl/csv_files_test_t1/'
 
 def saveData(currSod):
 	global dfQueueTracker, dfWaitingTracker, dfSpeedTracker, dfRewVals, dfActions
@@ -47,7 +47,7 @@ def saveData(currSod):
 			auxW.append(waitTime)
 			auxS.append(speed)
 		dfQueueTracker[j].loc[row] = np.array([auxQ])
-		dfWaitingTracker[j].loc[row] = np.array([auxQ])
+		dfWaitingTracker[j].loc[row] = np.array([auxW])
 		dfSpeedTracker[j].loc[row] = np.array([auxS])		
 	#Rewards, actions
 	auxA = [currSod]
@@ -115,7 +115,7 @@ def ini_dataframes():
 
 def br_marl_testing():  
 			
-	for day in range(0,var.episodesTest):
+	for day in range(0,var.days2Observe):
 		fileOut = open("days.csv","w")
 		fileOut.write("Testing day: "+str(day)+"\n")
 		fileOut.close()
