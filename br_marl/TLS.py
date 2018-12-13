@@ -362,7 +362,7 @@ class TLS(object):
 				s = self.currJointState[nb]
 				for act_j in var.agent_TLS[nb].actionPhases:
 					aij = self.jointActions[nb].index((act_i, act_j))
-					QM[act_i] += self.QValues[nb][s,aij] * self.M[nb][s,act_j]
+					QM[act_i] += self.QValues[nb][s][aij+1] * self.M[nb][s][act_j+1]
 		self.lastAction = self.currAction
 		self.currAction = np.argmax(QM)
 		self.finishPhase = [sec, False]

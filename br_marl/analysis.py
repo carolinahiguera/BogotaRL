@@ -4,6 +4,8 @@ import pandas as pd
 import var
 import numpy as np
 exec(open("var.py").read())
+path_ft = '/home/carolina/Documents/BogotaRL/fixed_time_org/csv_files'
+path_br = '/home/carolina/Documents/BogotaRL/br_marl/csv_files_train_t3/'
 
 
 avg_queues_junctions = {}
@@ -14,7 +16,7 @@ for tls in var.agent_TLS.keys():
 
 def get_avg_queues():
 	global avg_queues_junctions
-	path = '/home/carolina/Documents/BogotaRL/br_marl/csv_files_train_t3/'
+	
 	for j in var.junctions.keys():
 		queues_avg = pd.read_csv(path+'ft_queues_' + var.junctions[j].name + '_day' + str(0) + '.csv') 
 		for day in range(1,var.episodes):

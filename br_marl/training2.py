@@ -44,7 +44,7 @@ def saveData(currSod):
 			auxQ.append(queue)
 			auxW.append(waitTime)
 		dfQueueTracker[j].loc[row] = np.array([auxQ])
-		dfWaitingTracker[j].loc[row] = np.array([auxQ])		
+		dfWaitingTracker[j].loc[row] = np.array([auxW])		
 	#Rewards, actions and epsilon
 	auxA = [currSod]
 	auxE = [currSod]
