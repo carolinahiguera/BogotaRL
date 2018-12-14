@@ -19,6 +19,7 @@ days2Observe = 5
 sampleTime = 10
 timeYellow = 2
 minTimeGreen = 9#tipico entre 6 y 10seg
+maxTimeGreen = minTimeGreen*7
 min_numStates = 10
 beta = [1.0, 2.0]
 theta = [1.75, 1.75]

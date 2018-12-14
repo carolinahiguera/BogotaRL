@@ -114,6 +114,8 @@ def ini_dataframes():
 
 
 def br_marl_learning():  
+	for tls in var.agent_TLS.keys():
+		var.agent_TLS[tls].ini4learning()
 			
 	for day in range(0,var.episodes):
 		fileOut = open("days.csv","w")
@@ -123,9 +125,9 @@ def br_marl_learning():
 		sumoCmd = [sumoBinary, "-c", "../redSumo/bogota.sumo.cfg", "--no-step-log", "true"]
 		traci.start(sumoCmd)     
 		
-		ini_dataframes()
+		ini_dataframes()	
 		for tls in var.agent_TLS.keys():
-			var.agent_TLS[tls].ini4learning()
+			var.agent_TLS[tls].set_first_action()
 		
 		#Begins simulation of 1 day           
 		for currSod in range(0,var.secondsInDay):

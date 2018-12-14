@@ -51,6 +51,7 @@ class TLS(object):
 		self.epsilon = 1.0
 		self.setInYellow = -1
 		self.finishPhase = [-1, True]
+		self.timeInGreen = 0
 		
 		
 		#Q matrix
@@ -148,7 +149,8 @@ class TLS(object):
 				self.queueLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e]))
 				self.waitingLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e])) #EN MINUTOS
 				self.speedLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e]))
-		
+	
+	def set_first_action(self):	
 		seed = random.random()
 		random.seed(seed)
 		self.currAction = random.randint(0,len(self.actionPhases)-1) 
@@ -317,6 +319,12 @@ class TLS(object):
 						QM[act_i] += self.QValues[nb][s,aij] * self.M[nb][s,act_j]
 			self.currAction = np.argmax(QM)
 		self.finishPhase = [sec, False]
+		if self.lastAction == self.currAction:
+			self.timeInGreen += var.minTimeGreen
+		else: 
+			self.timeInGreen = 0
+		if self.timeInGreen > var.maxTimeGreen:
+			self.currAction = 1 if (self.currAction==0) else 0
 
 	def changeAction(self, sec, action):
 		self.currAction = action
