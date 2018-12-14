@@ -213,14 +213,17 @@ class TLS(object):
 			self.lastJointState[nb] = self.currJointState[nb]        
 	
 	def updateReward1(self):
-		reward = 0
+		reward = 0.0
+		acc = 0.0
 		for j in range(0,len(self.listJunctions)):
 			jName = self.listJunctions[j]
 			for e in range(0,len(var.junctions[jName].edges)):
-				a = (self.beta[0]*self.queueEdgeTracker[j][e])**self.theta[0]
-				b = (self.beta[1]*self.waitingEdgeTracker[j][e])**self.theta[1]
-				reward -= (a + b)
-		self.currReward = reward
+				acc += 1.0
+				a = self.beta[0]*41.0/(self.queueEdgeTracker[j][e]+1.0)
+				b = self.beta[1]*201.0/(self.waitingEdgeTracker[j][e]+1.0)
+				reward += (a + b)
+		rmax = 	(self.beta[0]*41.0+ self.beta[1]*201.0)*acc
+		self.currReward = 2.0*(reward/rmax) - 1.0
 	
 	def updateReward2(self):
 		reward = 0

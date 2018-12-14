@@ -6,7 +6,7 @@ if 'SUMO_HOME' in os.environ:
 else:   
 	sys.exit("please declare environment variable 'SUMO_HOME'")
 import traci
-sumoBinary = "sumo" #sumo-gui
+sumoBinary = "sumo-gui" #sumo-gui
 import random
 import pandas as pd
 import numpy as np
@@ -20,7 +20,7 @@ dfQueueTracker = {}
 dfWaitingTracker = {} 
 dfActions = {}
 dfEpsilon = {}
-path = '~/Documents/BogotaRL/br_marl/csv_files_train/'
+path = '~/Documents/BogotaRL/br_marl2/csv_files_train/'
 
 def saveData(currSod):
 	global dfQueueTracker, dfWaitingTracker, dfRewVals, dfActions, dfEpsilon
@@ -133,6 +133,7 @@ def br_marl_learning():
 				for tls in var.agent_TLS.keys():
 					if var.agent_TLS[tls].change_action:
 						if (currSod%var.sampleTime)==0 and currSod<=var.agent_TLS[tls].finishPhase[0]:
+							print('updating q '+tls)
 							gets.getObservationNow()
 							var.agent_TLS[tls].receive_reward()
 							var.agent_TLS[tls].updateQValue(currSod)	
