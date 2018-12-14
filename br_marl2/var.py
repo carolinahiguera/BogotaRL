@@ -12,8 +12,8 @@ global port, secondsInDay, episodes, sampleTime
 #avilable_ports = [8813, 8814, 8815, 8816, 8817, 8818, 8819, 8820] 
 #port = avilable_ports[2]
 
-secondsInDay = 46800#46800
-episodes = 200
+secondsInDay = 1000#46800
+episodes = 10
 episodesTest = 5
 days2Observe = 5
 sampleTime = 10
@@ -235,26 +235,38 @@ plan3 = [[55,'GGGGrrrrGGGGrr'],[3,'YYYYrrrrYYYYrr'],[3,'rrrrrrrrrrrrrr'],
 plan4 = [[57,'GGGGrrrrGGGGrr'],[3,'YYYYrrrrYYYYrr'],[4,'rrrrrrrrrrrrrr'],
          [2,'rrrruuuurrrruu'],[44,'rrrrGGGGrrrrGG'],[3,'rrrrYYYYrrrrYY'],
          [1,'rrrrrrrrrrrrrr'],[3,'uuuurrrruuuurr'],[3,'GGGGrrrrGGGGrr']]
-neighbors = ['tls_14_47', 'tls_13_46_47', 'tls_13_45']
+neighbors = ['tls_14_47']
+#neighbors = ['tls_14_47', 'tls_13_46_47', 'tls_13_45']
 agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
     neighbors, plan2, plan3, plan4)
 
 
-# tls = 'tls_14_47'
-# listJunctions = [8]
-# actionPhases = [0, 1]
-# auxPhases=[[-1, [3,2,6]],           
-#            [[5,2,4], -1]]
-# phases=[
-#     'GGGGrrrrGG',        
-#     'rrrrGGGGrr',
-#     'rrrrrrrrrr',
-#     'YYYYrrrrYY',
-#     'uuuurrrruu',
-#     'rrrrYYYYrr',
-#     'rrrruuuurr']
-# neighbors = ['tls_14_45', 'tls_13_46_47', 'tls_14_49']
-# agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, theta, exp, neighbors)
+tls = 'tls_14_47'
+listJunctions = [8]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],           
+           [[5,2,4], -1]]
+phases=[
+    'GGGGrrrrGG',        
+    'rrrrGGGGrr',
+    'rrrrrrrrrr',
+    'YYYYrrrrYY',
+    'uuuurrrruu',
+    'rrrrYYYYrr',
+    'rrrruuuurr']
+plan2 = [[3,'rrrrrrrrrr'],[2,'uuuurrrruu'],[67,'GGGGrrrrGG'],
+         [3,'YYYYrrrrYY'],[2,'rrrrrrrrrr'],[2,'rrrruuuurr'],
+         [39,'rrrrGGGGrr'],[2,'rrrrYYYYrr']]
+plan3 = [[2,'rrrrYYYYrr'],[2,'rrrrrrrrrr'],[2,'uuuurrrruu'],
+         [69,'GGGGrrrrGG'],[3,'YYYYrrrrYY'],[2,'rrrrrrrrrr'],
+         [2,'rrrruuuurr'],[37,'rrrrGGGGrr'],[1,'rrrrYYYYrr']]
+plan4 = [[75,'GGGGrrrrGG'],[3,'YYYYrrrrYY'],[2,'rrrrrrrrrr'],
+         [2,'rrrruuuurr'],[31,'rrrrGGGGrr'],[3,'rrrrYYYYrr'],
+         [2,'rrrrrrrrrr'],[2,'uuuurrrruu']]
+neighbors = ['tls_14_45']
+#neighbors = ['tls_14_45', 'tls_13_46_47', 'tls_14_49']
+agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
+    neighbors, plan2, plan3, plan4)
 
 
 # tls = 'tls_14_49'

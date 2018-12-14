@@ -6,7 +6,7 @@ if 'SUMO_HOME' in os.environ:
 else:   
 	sys.exit("please declare environment variable 'SUMO_HOME'")
 import traci
-sumoBinary = "sumo-gui" #sumo-gui
+sumoBinary = "sumo" #sumo-gui
 import random
 import pandas as pd
 import numpy as np
@@ -20,7 +20,7 @@ dfQueueTracker = {}
 dfWaitingTracker = {} 
 dfActions = {}
 dfEpsilon = {}
-#path = '~/Documents/BogotaRL/br_marl/csv_files_train/'
+path = '~/Documents/BogotaRL/br_marl/csv_files_train/'
 
 def saveData(currSod):
 	global dfQueueTracker, dfWaitingTracker, dfRewVals, dfActions, dfEpsilon
@@ -104,6 +104,8 @@ def ini_dataframes():
 	dfEpsilon = pd.DataFrame(index=range(rows), columns=range(1+len(var.agent_TLS)))
 
 def br_marl_learning():
+	for tls in var.agent_TLS.keys():
+		var.agent_TLS[tls].initialize()
 	#learn previously from Fixed Time control to speed up learning
 	for day in range(0,int(var.episodes*0.3)):
 		fileOut = open("days.csv","w")
@@ -113,9 +115,7 @@ def br_marl_learning():
 		sumoCmd = [sumoBinary, "-c", "../redSumo/bogota.sumo.cfg", "--no-step-log", "true"]
 		traci.start(sumoCmd)     
 		
-		ini_dataframes()
-		for tls in var.agent_TLS.keys():
-			var.agent_TLS[tls].initialize()
+		ini_dataframes()		
 
 		for currSod in range(0,var.secondsInDay):
 			traci.simulationStep()
@@ -126,17 +126,54 @@ def br_marl_learning():
 				if var.agent_TLS[tls].finishPhase[1]:
 					var.agent_TLS[tls].ft_get_phase(currSod)
 					traci.trafficlight.setRedYellowGreenState(tls, var.agent_TLS[tls].RedYellowGreenState)
+			if currSod>120:
+				for tls in var.agent_TLS.keys():
+					var.agent_TLS[tls].getJointAction()
 				#update Q(s,a) values
-				if var.agent_TLS[tls].change_action:					
-					var.agent_TLS[tls].change_action = False
-					gets.getObservationNow()
-					var.agent_TLS[tls].receive_reward()
-					#var.agent_TLS[tls].updateQValue()
-					print('update q value')
-
-
-
-			#print(var.agent_TLS['tls_14_45'].RedYellowGreenState)
+				for tls in var.agent_TLS.keys():
+					if var.agent_TLS[tls].change_action:
+						if (currSod%var.sampleTime)==0 and currSod<=var.agent_TLS[tls].finishPhase[0]:
+							gets.getObservationNow()
+							var.agent_TLS[tls].receive_reward()
+							var.agent_TLS[tls].updateQValue(currSod)	
+			# if (currSod%var.sampleTime == 0):
+			# 	saveData(currSod)
+		data2files(day)
 		traci.close()
-		#End simulation of 1 day
+
+	#switch to br-marl 
+	for day in range(int(var.episodes*0.3), var.episodes):
+		fileOut = open("days.csv","w")
+		fileOut.write("Training day with BR: "+str(day)+"\n")
+		fileOut.close()
+		
+		sumoCmd = [sumoBinary, "-c", "../redSumo/bogota.sumo.cfg", "--no-step-log", "true"]
+		traci.start(sumoCmd)     
+		
+		ini_dataframes()	
+
+		for currSod in range(0,var.secondsInDay):
+			traci.simulationStep()
+			gets.getObservation(currSod)
+			for tls in var.agent_TLS.keys():
+				if var.agent_TLS[tls].finishPhase[1]:
+					var.agent_TLS[tls].receive_reward()
+					var.agent_TLS[tls].updateStateAction()
+					var.agent_TLS[tls].learnPolicy(currSod)
+					var.agent_TLS[tls].getAction(day, currSod)
+			for tls in var.agent_TLS.keys():
+				var.agent_TLS[tls].getJointAction()
+			for tls in var.agent_TLS.keys():
+				var.agent_TLS[tls].setPhase(currSod)
+				traci.trafficlight.setRedYellowGreenState(tls, var.agent_TLS[tls].RedYellowGreenState)
+
+			# if (currSod%var.sampleTime == 0):
+			# 	saveData(currSod)
+		data2files(day)
+		traci.close()
+	#-----------------------------------------------------
+	fileOut = open("days.csv","w")
+	fileOut.write("End training \n")
+	fileOut.close()
+
 
