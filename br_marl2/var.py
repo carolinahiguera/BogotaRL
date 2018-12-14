@@ -12,17 +12,17 @@ global port, secondsInDay, episodes, sampleTime
 #avilable_ports = [8813, 8814, 8815, 8816, 8817, 8818, 8819, 8820] 
 #port = avilable_ports[2]
 
-secondsInDay = 1000#46800
-episodes = 10
+secondsInDay = 46800#46800
+episodes = 200
 episodesTest = 5
 days2Observe = 5
 sampleTime = 10
 timeYellow = 2
 minTimeGreen = 9#tipico entre 6 y 10seg
+maxTimeGreen = minTimeGreen*7
 min_numStates = 10
-beta = [1.0, 2.0]
-theta = [1.75, 1.75]
-exp = [2.0, 1.5]
+beta = [0.3, 0.7]
+pTransfer = 0.2
 
 #====================== Juntion properties ======================
 junctions = {}
@@ -235,8 +235,8 @@ plan3 = [[55,'GGGGrrrrGGGGrr'],[3,'YYYYrrrrYYYYrr'],[3,'rrrrrrrrrrrrrr'],
 plan4 = [[57,'GGGGrrrrGGGGrr'],[3,'YYYYrrrrYYYYrr'],[4,'rrrrrrrrrrrrrr'],
          [2,'rrrruuuurrrruu'],[44,'rrrrGGGGrrrrGG'],[3,'rrrrYYYYrrrrYY'],
          [1,'rrrrrrrrrrrrrr'],[3,'uuuurrrruuuurr'],[3,'GGGGrrrrGGGGrr']]
-neighbors = ['tls_14_47']
-#neighbors = ['tls_14_47', 'tls_13_46_47', 'tls_13_45']
+#neighbors = ['tls_14_47']
+neighbors = ['tls_14_47', 'tls_13_46_47', 'tls_13_45']
 agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
     neighbors, plan2, plan3, plan4)
 
@@ -263,245 +263,401 @@ plan3 = [[2,'rrrrYYYYrr'],[2,'rrrrrrrrrr'],[2,'uuuurrrruu'],
 plan4 = [[75,'GGGGrrrrGG'],[3,'YYYYrrrrYY'],[2,'rrrrrrrrrr'],
          [2,'rrrruuuurr'],[31,'rrrrGGGGrr'],[3,'rrrrYYYYrr'],
          [2,'rrrrrrrrrr'],[2,'uuuurrrruu']]
-neighbors = ['tls_14_45']
-#neighbors = ['tls_14_45', 'tls_13_46_47', 'tls_14_49']
+#neighbors = ['tls_14_45']
+neighbors = ['tls_14_45', 'tls_13_46_47', 'tls_14_49']
 agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
     neighbors, plan2, plan3, plan4)
 
 
-# tls = 'tls_14_49'
-# listJunctions = [9]
-# actionPhases = [0, 1]
-# auxPhases=[[-1, [3,2,6]],
-#            [[5,2,4], -1]]
-# phases=[
-#     'GGGGrrGG',
-#     'rrrrGGrr',
-#     'rrrrrrrr',
-#     'YYYYrrYY',
-#     'uuuurruu',
-#     'rrrrYYrr',
-#     'rrrruurr']
-# neighbors = ['tls_14_47', 'tls_13_49_50', 'tls_14_51']
-# agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, theta, exp, neighbors)
+tls = 'tls_14_49'
+listJunctions = [9]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
+phases=[
+    'GGGGrrGG',
+    'rrrrGGrr',
+    'rrrrrrrr',
+    'YYYYrrYY',
+    'uuuurruu',
+    'rrrrYYrr',
+    'rrrruurr']
+plan2 = [[4,'rrrrGGrr'],[3,'rrrrYYrr'],[2,'rrrrrrrr'],
+         [2,'uuuurruu'],[66,'GGGGrrGG'],[3,'YYYYrrYY'],
+         [1,'rrrrrrrrrrrrrrrr'],[2,'rrrruurr'],[37,'rrrrGGrr']]
+plan3 = [[2,'rrrrGGrr'],[3,'rrrrYYrr'],[2,'rrrrrrrr'],
+         [2,'uuuurruu'],[64,'GGGGrrGG'],[3,'YYYYrrYY'],
+         [1,'rrrrrrrr'],[2,'rrrruurr'],[41,'rrrrGGrr']]
+plan4 = [[68,'GGGGrrGG'],[3,'YYYYrrYY'],[1,'rrrrrrrr'],
+         [2,'rrrruurr'],[39,'rrrrGGrr'],[3,'rrrrYYrr'],
+         [2,'rrrrrrrr'],[2,'uuuurruu']]
+neighbors = ['tls_14_47', 'tls_13_49_50', 'tls_14_51']
+agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
+    neighbors, plan2, plan3, plan4)
 
 
-# tls = 'tls_14_51'
-# listJunctions = [10]
-# actionPhases = [0, 1]
-# auxPhases=[[-1, [3,2,6]],
-#            [[5,2,4], -1]]
-# phases=[
-#     'rrGGGGGG',       
-#     'GGrrrrrr',
-#     'rrrrrrrr', 
-#     'rrYYYYYY',
-#     'rruuuuuu',
-#     'YYrrrrrr',
-#     'uurrrrrr']
-# neighbors = ['tls_14_49', 'tls_13_51', 'tls_14_53']
-# agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, theta, exp, neighbors)
+tls = 'tls_14_51'
+listJunctions = [10]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
+phases=[
+    'rrGGGGGG',       
+    'GGrrrrrr',
+    'rrrrrrrr', 
+    'rrYYYYYY',
+    'rruuuuuu',
+    'YYrrrrrr',
+    'uurrrrrr']
+plan2 = [[3,'rrrrrrrr'],[2,'rruuuuuu'],[67,'rrGGGGGG'],
+         [3,'rrYYYYYY'],[2,'rrrrrrrr'],[2,'uurrrrrr'],
+         [39,'GGrrrrrr'],[2,'YYrrrrrr']]
+plan3 = [[2,'YYrrrrrr'],[2,'rrrrrrrr'],[2,'rruuuuuu'],
+         [69,'rrGGGGGG'],[3,'rrYYYYYY'],[2,'rrrrrrrr'],
+         [2,'uurrrrrr'],[37,'GGrrrrrr'],[1,'YYrrrrrr']]
+plan4 = [[75,'rrGGGGGG'],[3,'rrYYYYYY'],[2,'rrrrrrrr'],
+         [2,'uurrrrrr'],[31,'GGrrrrrr'],[3,'YYrrrrrr'],
+         [2,'rrrrrrrr'],[2,'rruuuuuu']]
+neighbors = ['tls_14_49', 'tls_13_51', 'tls_14_53']
+agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
+    neighbors, plan2, plan3, plan4)
+
+tls = 'tls_14_53'
+listJunctions = [11]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
+phases=[
+    'GGGGrrrrrGGGGrrrr',      
+    'rrrrGGGGGrrrrGGGG',
+    'rrrrrrrrrrrrrrrrr',
+    'YYYYrrrrrYYYYrrrr',
+    'uuuurrrrruuuurrrr',
+    'rrrrYYYYYrrrrYYYY',
+    'rrrruuuuurrrruuuu']
+plan2 = [[3,'rrrrrrrrrrrrrrrrr'],[2,'uuuurrrrruuuurrrr'],[67,'GGGGrrrrrGGGGrrrr'],
+         [3,'YYYYrrrrrYYYYrrrr'],[2,'rrrrrrrrrrrrrrrrr'],[2,'rrrruuuuurrrruuuu'],
+         [39,'rrrrGGGGGrrrrGGGG'],[2,'rrrrYYYYYrrrrYYYY']]
+plan3 = [[2,'rrrrYYYYYrrrrYYYY'],[2,'rrrrrrrrrrrrrrrrr'],[2,'uuuurrrrruuuurrrr'],
+         [69,'GGGGrrrrrGGGGrrrr'],[3,'YYYYrrrrrYYYYrrrr'],[2,'rrrrrrrrrrrrrrrrr'],
+         [2,'rrrruuuuurrrruuuu'],[37,'rrrrGGGGGrrrrGGGG'],[1,'rrrrYYYYYrrrrYYYY']]
+plan4 = [[75,'GGGGrrrrrGGGGrrrr'],[3,'YYYYrrrrrYYYYrrrr'],[2,'rrrrrrrrrrrrrrrrr'],
+         [2,'rrrruuuuurrrruuuu'],[31,'rrrrGGGGGrrrrGGGG'],[3,'rrrrYYYYYrrrrYYYY'],
+         [2,'rrrrrrrrrrrrrrrrr'],[2,'uuuurrrrruuuurrrr']]
+neighbors = ['tls_14_51', 'tls_13_53']
+agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
+    neighbors, plan2, plan3, plan4)
+
+tls = 'tls_13_45'
+listJunctions = [0]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
+phases=[
+    'GGGGGGGrrrrrr',        
+    'rrrrrrrGGGGGG',
+    'rrrrrrrrrrrrr',
+    'YYYYYYYrrrrrr',
+    'uuuuuuurrrrrr',
+    'rrrrrrrYYYYYY',
+    'rrrrrrruuuuuu']
+plan2 = [[9,'rrrrrrrrrrrrr'],[2,'uuuuuuurrrrrr'],[46,'GGGGGGGrrrrrr'],
+         [3,'YYYYYYYrrrrrr'],[2,'rrrrrrrrrrrrr'],[2,'rrrrrrruurrrr'],
+         [2,'rrrrrrrGGuuuu'],[37,'rrrrrrrGGGGGG'],[3,'rrrrrrrYYGGGG'],
+         [4,'rrrrrrrrrYYYY'],[10,'rrrrrrrrrrrrr']]
+plan3 = [[5,'rrrrrrrrrrrrr'],[2,'uuuuuuurrrrrr'],[43,'GGGGGGGrrrrrr'],
+         [3,'YYYYYYYrrrrrr'],[2,'rrrrrrrrrrrrr'],[2,'rrrrrrruurrrr'],
+         [2,'rrrrrrrGGuuuu'],[40,'rrrrrrrGGGGGG'],[3,'rrrrrrrYYGGGG'],
+         [4,'rrrrrrrrrYYYY'],[14,'rrrrrrrrrrrrr']]
+plan4 = [[1,'rrrrrrrrrrrrr'],[2,'uuuuuuurrrrrr'],[49,'GGGGGGGrrrrrr'],
+         [3,'YYYYYYYrrrrrr'],[2,'rrrrrrrrrrrrr'],[2,'rrrrrrruurrrr'],
+         [2,'rrrrrrrGGuuuu'],[34,'rrrrrrrGGGGGG'],[3,'rrrrrrrYYGGGG'],
+         [4,'rrrrrrrrrYYYY'],[18,'rrrrrrrrrrrrr']]
+neighbors = ['tls_14_45', 'tls_13_46_47', 'tls_7_45']
+agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
+    neighbors, plan2, plan3, plan4)
+
+tls = 'tls_13_46_47'
+listJunctions = [1,2]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
+phases=[
+    'GGGGrrrGGGGGrrrr',        
+    'rrrrrrrrrrrrGGGG',
+    'rrrrrrrrrrrrrrrr',
+    'YYYYrrrYYYYYrrrr',
+    'uuuurrruuuuurrrr',
+    'rrrrrrrrrrrrYYYY',
+    'rrrrrrrrrrrruuuu']
+plan2 = [[15,'rrrrrrrrrrrrGGGG'],[3,'rrrrrrrrrrrrYYYY'],[3,'rrrrrrrrrrrrrrrr'],
+         [2,'uuuurrruuuuurrrr'],[48,'GGGGrrrGGGGGrrrr'],[3,'YYYYrrrYYYYYrrrr'],
+         [2,'rrrrrrrrrrrruuuu'],[2,'rrrrrrrrrrrrGGGG'],[2,'rrrruuurrrrrGGGG'],
+         [27,'rrrrGGGrrrrrGGGG'],[3,'rrrrYYYrrrrrGGGG'],[10,'rrrrrrrrrrrrGGGG']]
+plan3 = [[10,'rrrrrrrrrrrrGGGG'],[3,'rrrrrrrrrrrrYYYY'],[3,'rrrrrrrrrrrrrrrr'],
+         [2,'uuuurrruuuuurrrr'],[49,'GGGGrrrGGGGGrrrr'],[3,'YYYYrrrYYYYYrrrr'],
+         [2,'rrrrrrrrrrrruuuu'],[2,'rrrrrrrrrrrrGGGG'],[2,'rrrruuurrrrrGGGG'],
+         [19,'rrrrGGGrrrrrGGGG'],[3,'rrrrYYYrrrrrGGGG'],[22,'rrrrrrrrrrrrGGGG']]
+plan4 = [[3,'rrrrrrrrrrrrGGGG'],[3,'rrrrrrrrrrrrYYYY'],[3,'rrrrrrrrrrrrrrrr'],
+         [2,'uuuurrruuuuurrrr'],[48,'GGGGrrrGGGGGrrrr'],[3,'YYYYrrrYYYYYrrrr'],
+         [2,'rrrrrrrrrrrruuuu'],[2,'rrrrrrrrrrrrGGGG'],[2,'rrrruuurrrrrGGGG'],
+         [24,'rrrrGGGrrrrrGGGG'],[3,'rrrrYYYrrrrrGGGG'],[25,'rrrrrrrrrrrrGGGG']]
+neighbors = ['tls_13_45', 'tls_14_47', 'tls_13_49_50']
+agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
+    neighbors, plan2, plan3, plan4)
+
+tls = 'tls_13_49_50'
+listJunctions = [3, 4]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
+phases=[
+    'GGGGGrrrrGGGGGrrrr',        
+    'rrrrrGGGGrrrrrGGGG',
+    'rrrrrrrrrrrrrrrrrr',
+    'YYYYYrrrrYYYYYrrrr',
+    'uuuuurrrruuuuurrrr',
+    'rrrrrYYYYrrrrrYYYY',
+    'rrrrruuuurrrrruuuu']
+plan2 = [[18,'rrrrrGGGGrrrrrGGGG'],[3,'rrrrrYYYYrrrrrYYYY'],
+         [2,'uuuuurrrruuuuurrrr'],[51,'GGGGGrrrrGGGGGrrrr'],
+         [3,'YYYYYrrrrYYYYYrrrr'],[2,'rrrrruuuurrrrruuuu'],
+         [41,'rrrrrGGGGrrrrrGGGG']]
+plan3 = [[11,'rrrrrGGGGrrrrrGGGG'],[3,'rrrrrYYYYrrrrrYYYY'],
+         [2,'uuuuurrrruuuuurrrr'],[51,'GGGGGrrrrGGGGGrrrr'],
+         [3,'YYYYYrrrrYYYYYrrrr'],[2,'rrrrruuuurrrrruuuu'],
+         [48,'rrrrrGGGGrrrrrGGGG']]
+plan4 = [[5,'rrrrrGGGGrrrrrGGGG'],[3,'rrrrrYYYYrrrrrYYYY'],
+         [2,'uuuuurrrruuuuurrrr'],[50,'GGGGGrrrrGGGGGrrrr'],
+         [3,'YYYYYrrrrYYYYYrrrr'],[2,'rrrrruuuurrrrruuuu'],
+         [55,'rrrrrGGGGrrrrrGGGG']]
+neighbors = ['tls_13_46_47', 'tls_14_49', 'tls_13_51']
+agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
+    neighbors, plan2, plan3, plan4)
 
 
-# tls = 'tls_14_53'
-# listJunctions = [11]
-# actionPhases = [0, 1]
-# auxPhases=[[-1, [3,2,6]],
-#            [[5,2,4], -1]]
-# phases=[
-#     'GGGGrrrrrGGGGrrrr',      
-#     'rrrrGGGGGrrrrGGGG',
-#     'rrrrrrrrrrrrrrrrr',
-#     'YYYYrrrrrYYYYrrrr',
-#     'uuuurrrrruuuurrrr',
-#     'rrrrYYYYYrrrrYYYY',
-#     'rrrruuuuurrrruuuu']
-# neighbors = ['tls_14_51', 'tls_13_53']
-# agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, theta, exp, neighbors)
+tls = 'tls_13_51'
+listJunctions = [5]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
+phases=[
+    'GGGGrrrr',        
+    'rrrrGGGG',
+    'rrrrrrrr',
+    'YYYYrrrr',
+    'uuuurrrr',
+    'rrrrYYYY',
+    'rrrruuuu']
+plan2 = [[18,'rrrrGGGG'],[3,'rrrrYYYY'],[2,'uuuurrrr'],
+         [51,'GGGGrrrr'],[3,'YYYYrrrr'],[2,'rrrruuuu'],
+         [41,'rrrrGGGG']]
+plan3 = [[11,'rrrrGGGG'],[3,'rrrrYYYY'],[2,'uuuurrrr'],
+         [51,'GGGGrrrr'],[3,'YYYYrrrr'],[2,'rrrruuuu'],
+         [48,'rrrrGGGG']]
+plan4 = [[5,'rrrrGGGG'],[3,'rrrrYYYY'],[2,'uuuurrrr'],
+         [50,'GGGGrrrr'],[3,'YYYYrrrr'],[2,'rrrruuuu'],
+         [55,'rrrrGGGG']]
+neighbors = ['tls_14_51', 'tls_13_49_50', 'tls_13_53']
+agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
+    neighbors, plan2, plan3, plan4)
+
+tls = 'tls_13_53'
+listJunctions = [6]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], 5, -1]]
+phases=[
+    'GGGGGrrrrrr',        
+    'rrrrrGGGGGG',
+    'rrrrrrrrrrr',
+    'YYYYYrrrrrr',
+    'uuuuurrrrrr',
+    'rrrrrYYYYYY',
+    'rrrrruuuuuu']
+plan2 = [[18,'rrrrrGGGGGG'],[3,'rrrrrYYYYYY'],[2,'uuuuurrrrrr'],
+         [51,'GGGGGrrrrrr'],[3,'YYYYYrrrrrr'],[2,'rrrrruuuuuu'],
+         [41,'rrrrrGGGGGG']]
+plan3 = [[11,'rrrrrGGGGGG'],[3,'rrrrrYYYYYY'],[2,'uuuuurrrrrr'],
+         [51,'GGGGGrrrrrr'],[3,'YYYYYrrrrrr'],[2,'rrrrruuuuuu'],
+         [48,'rrrrrGGGGGG']]
+plan4 = [[5,'rrrrrGGGGGG'],[3,'rrrrrYYYYYY'],[2,'uuuuurrrrrr'],
+         [50,'GGGGGrrrrrr'],[3,'YYYYYrrrrrr'],[2,'rrrrruuuuuu'],
+         [55,'rrrrrGGGGGG']]
+neighbors = ['tls_13_51', 'tls_14_53', 'tls_9_53']
+agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
+    neighbors, plan2, plan3, plan4)
+
+tls = 'tls_9_53'
+listJunctions = [17]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
+phases=[
+    'rrrrGGGGrr',        
+    'GGGGrrrrGG',
+    'rrrrrrrrrr',
+    'rrrrYYYYrr',
+    'rrrruuuurr',
+    'YYYYrrrrYY',
+    'uuuurrrruu']
+plan2 = [[18,'GGGGrrrrGG'],[3,'YYYYrrrrYY'],[2,'rrrruuuurr'],
+         [51,'rrrrGGGGrr'],[3,'rrrrYYYYrr'],[2,'uuuurrrruu'],
+         [41,'GGGGrrrrGG']]
+plan3 = [[11,'GGGGrrrrGG'],[3,'YYYYrrrrYY'],[2,'rrrruuuurr'],
+         [51,'rrrrGGGGrr'],[3,'rrrrYYYYrr'],[2,'uuuurrrruu'],
+         [48,'GGGGrrrrGG']]
+plan4 = [[5,'GGGGrrrrGG'],[3,'YYYYrrrrYY'],[2,'rrrruuuurr'],
+         [50,'rrrrGGGGrr'],[3,'rrrrYYYYrr'],[2,'uuuurrrruu'],
+         [55,'GGGGrrrrGG']]
+neighbors = ['tls_13_53', 'tls_7_53']
+agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
+    neighbors, plan2, plan3, plan4)
 
 
-# tls = 'tls_13_45'
-# listJunctions = [0]
-# actionPhases = [0, 1]
-# auxPhases=[[-1, [3,2,6]],
-#            [[5,2,4], -1]]
-# phases=[
-#     'GGGGGGGrrrrrr',        
-#     'rrrrrrrGGGGGG',
-#     'rrrrrrrrrrrrr',
-#     'YYYYYYYrrrrrr',
-#     'uuuuuuurrrrrr',
-#     'rrrrrrrYYYYYY',
-#     'rrrrrrruuuuuu']
-# neighbors = ['tls_14_45', 'tls_13_46_47', 'tls_7_45']
-# agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, theta, exp, neighbors)
+tls = 'tls_7_45'
+listJunctions = [12]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
+phases=[    
+    'GGGGGGGGGGOOrrrrrr',       
+    'rrrrrrrrrrrrGGGGGG',
+    'rrrrrrrrrrrrrrrrrr', 
+    'YYYYYYYYYYOOrrrrrr',
+    'uuuuuuuuuuOOrrrrrr',
+    'rrrrrrrrrrrrYYYYYY',
+    'rrrrrrrrrrrruuuuuu']
+plan2 = [[20,'rrrrrrrrrrrrGGGGGG'],[3,'rrrrrrrrrrrrYYYYYY'],
+         [2,'rrrrrrrrrrrrrrrrrr'],[2,'uuuuuuuuuuuurrrrrr'],
+         [60,'GGGGGGGGGGGGrrrrrr'],[3,'GGGGGYYYYYYYrrrrrr'],
+         [10,'GGGGGrrrrrrrrrrrrr'],[3,'YYYYYrrrrrrrrrrrrr'],
+         [1,'rrrrrrrrrrrrrrrrrr'],[2,'rrrrrrrrrrrruuuuuu'],
+         [14,'rrrrrrrrrrrrGGGGGG']]
+plan3 = [[35,'GGGGGGGGGGGGrrrrrr'],[3,'GGGGGYYYYYYYrrrrrr'],
+         [10,'GGGGGrrrrrrrrrrrrr'],[3,'YYYYYrrrrrrrrrrrrr'],
+         [1,'rrrrrrrrrrrrrrrrrr'],[2,'rrrrrrrrrrrruuuuuu'],
+         [37,'rrrrrrrrrrrrGGGGGG'],[3,'rrrrrrrrrrrrYYYYYY'],
+         [1,'rrrrrrrrrrrrrrrrrr'],[2,'rrrrrrrrrrrruuuuuu'],
+         [37,'rrrrrrrrrrrrGGGGGG'],[3,'rrrrrrrrrrrrYYYYYY'],
+         [1,'rrrrrrrrrrrrrrrrrr'],[2,'uuuuuuuuuuuurrrrrr'],
+         [23,'GGGGGGGGGGGGrrrrrr']]
+plan4 = [[2,'rrrrrrrrrrrrGGGGGG'],[3,'rrrrrrrrrrrrYYYYYY'],
+         [1,'rrrrrrrrrrrrrrrrrr'],[2,'uuuuuuuuuuuurrrrrr'],
+         [63,'GGGGGGGGGGGGrrrrrr'],[3,'GGGGGYYYYYYYrrrrrr'],
+         [10,'GGGGGrrrrrrrrrrrrr'],[3,'YYYYYrrrrrrrrrrrrr'],
+         [2,'rrrrrrrrrrrrrrrrrr'],[2,'rrrrrrrrrrrruuuuuu'],
+         [29,'rrrrrrrrrrrrGGGGGG']]
 
+neighbors = ['tls_13_45', 'tls_7_46']
+agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
+    neighbors, plan2, plan3, plan4)
 
-# tls = 'tls_13_46_47'
-# listJunctions = [1,2]
-# actionPhases = [0, 1]
-# auxPhases=[[-1, [3,2,6]],
-#            [[5,2,4], -1]]
-# phases=[
-#     'GGGGrrrGGGGGrrrr',        
-#     'rrrrrrrrrrrrGGGG',
-#     'rrrrrrrrrrrrrrrr',
-#     'YYYYrrrYYYYYrrrr',
-#     'uuuurrruuuuurrrr',
-#     'rrrrrrrrrrrrYYYY',
-#     'rrrrrrrrrrrruuuu']
-# neighbors = ['tls_13_45', 'tls_14_47', 'tls_13_49_50']
-# agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, theta, exp, neighbors)
+tls = 'tls_7_46'
+listJunctions = [13]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
+phases=[    
+    'GGGGGrrrrrrGGG',        
+    'rrrrrGGGGGGrrr',
+    'rrrrrrrrrrrrrr',
+    'YYYYYrrrrrrYYY',
+    'uuuuurrrrrruuu',
+    'rrrrrYYYYYYrrr',
+    'rrrrruuuuuurrr']
+plan2 = [[24,'rrrrrGGGGGGrrr'],[3,'rrrrrYYYYYYrrr'],
+         [1,'rrrrrrrrrrrrrr'],[2,'uuuuurrrrrruuu'],
+         [71,'GGGGGrrrrrrGGG'],[3,'YYYYYrrrrrrYYY'],
+         [2,'rrrrruuuuuurrr'],[14,'rrrrrGGGGGGrrr']]
+plan3 = [[53,'GGGGGrrrrrrGGG'],[3,'YYYYYrrrrrrYYY'],
+         [2,'rrrrruuuuuurrr'],[33,'rrrrrGGGGGGrrr'],
+         [3,'rrrrrYYYYYYrrr'],[1,'rrrrrrrrrrrrrr'],
+         [2,'uuuuurrrrrruuu'],[23,'GGGGGrrrrrrGGG']]
+plan4 = [[6,'rrrrrGGGGGGrrr'],[3,'rrrrrYYYYYYrrr'],
+         [1,'rrrrrrrrrrrrrr'],[2,'uuuuurrrrrruuu'],
+         [76,'GGGGGrrrrrrGGG'],[3,'YYYYYrrrrrrYYY'],
+         [2,'rrrrruuuuuurrr'],[27,'rrrrrGGGGGGrrr']]
+neighbors = ['tls_7_45', 'tls_7_47']
+agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
+    neighbors, plan2, plan3, plan4)
 
+tls = 'tls_7_47'
+listJunctions = [14]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
+phases=[    
+    'GGGGGrrrrrrrGGG',        
+    'rrrrrGGGGGGGrrr',
+    'rrrrrrrrrrrrrrr',
+    'YYYYYrrrrrrrYYY',
+    'uuuuurrrrrrruuu',
+    'rrrrrYYYYYYYrrr',
+    'rrrrruuuuuuurrr']
+plan2 = [[28,'rrrrrGGGGGGGrrr'],[3,'rrrrrYYYYYYYrrr'],
+         [2,'uuuuurrrrrrruuu'],[66,'GGGGGrrrrrrrGGG'],
+         [3,'YYYYYrrrrrrrYYY'],[2,'rrrrruuuuuuurrr'],
+         [16,'rrrrrGGGGGGGrrr']]
+plan3 = [[47,'GGGGGrrrrrrrGGG'],[3,'YYYYYrrrrrrrYYY'],
+         [2,'rrrrruuuuuuurrr'],[40,'rrrrrGGGGGGGrrr'],
+         [3,'rrrrrYYYYYYYrrr'],[2,'uuuuurrrrrrruuu'],
+         [23,'GGGGGrrrrrrrGGG']]
+plan4 = [[10,'rrrrrGGGGGGGrrr'],[3,'rrrrrYYYYYYYrrr'],
+         [2,'uuuuurrrrrrruuu'],[67,'GGGGGrrrrrrrGGG'],
+         [3,'YYYYYrrrrrrrYYY'],[2,'rrrrruuuuuuurrr'],
+         [33,'rrrrrGGGGGGGrrr']]
+neighbors = ['tls_7_46', 'tls_7_49']
+agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
+    neighbors, plan2, plan3, plan4)
 
-# tls = 'tls_13_49_50'
-# listJunctions = [3, 4]
-# actionPhases = [0, 1]
-# auxPhases=[[-1, [3,2,6]],
-#            [[5,2,4], -1]]
-# phases=[
-#     'GGGGGrrrrGGGGGrrrr',        
-#     'rrrrrGGGGrrrrrGGGG',
-#     'rrrrrrrrrrrrrrrrrr',
-#     'YYYYYrrrrYYYYYrrrr',
-#     'uuuuurrrruuuuurrrr',
-#     'rrrrrYYYYrrrrrYYYY',
-#     'rrrrruuuurrrrruuuu']
-# neighbors = ['tls_13_46_47', 'tls_14_49', 'tls_13_51']
-# agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, theta, exp, neighbors)
+tls = 'tls_7_49'
+listJunctions = [15]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
+phases=[    
+    'rrGGGGGGGG',        
+    'GGrrrrrrrr',
+    'rrrrrrrrrr',
+    'rrYYYYYYYY',
+    'rruuuuuuuu',
+    'YYrrrrrrrr',
+    'uurrrrrrrr']
+plan2 = [[3,'YYrrrrrrrr'],[1,'rrrrrrrrrr'],[2,'rruuuuuuuu'],
+         [74,'rrGGGGGGGG'],[2,'rrYYYYYYYY'],[2,'uurrrrrrrr'],
+         [14,'GGuuuuuuuu']]
+plan3 = [[64,'rrGGGGGGGG'],[3,'rrYYYYYYYY'],[2,'uurrrrrrrr'],
+         [30,'GGuuuuuuuu'],[3,'YYrrrrrrrr'],[2,'rruuuuuuuu'],
+         [16,'rrGGGGGGGG']]
+plan4 = [[11,'GGrrrrrrrr'],[3,'YYrrrrrrrr'],[2,'rruuuuuuuu'],[71,'rrGGGGGGGG'],
+         [2,'rrYYYYYYYY'],[2,'uurrrrrrrr'],[29,'GGuuuuuuuu']]
+neighbors = ['tls_7_47', 'tls_7_53']
+agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
+    neighbors, plan2, plan3, plan4)
 
-
-# tls = 'tls_13_51'
-# listJunctions = [5]
-# actionPhases = [0, 1]
-# auxPhases=[[-1, [3,2,6]],
-#            [[5,2,4], -1]]
-# phases=[
-#     'GGGGrrrr',        
-#     'rrrrGGGG',
-#     'rrrrrrrr',
-#     'YYYYrrrr',
-#     'uuuurrrr',
-#     'rrrrYYYY',
-#     'rrrruuuu']
-# neighbors = ['tls_14_51', 'tls_13_49_50', 'tls_13_53']
-# agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, theta, exp, neighbors)
-
-
-# tls = 'tls_13_53'
-# listJunctions = [6]
-# actionPhases = [0, 1]
-# auxPhases=[[-1, [3,2,6]],
-#            [[5,2,4], 5, -1]]
-# phases=[
-#     'GGGGGrrrrrr',        
-#     'rrrrrGGGGGG',
-#     'rrrrrrrrrrr',
-#     'YYYYYrrrrrr',
-#     'uuuuurrrrrr',
-#     'rrrrrYYYYYY',
-#     'rrrrruuuuuu']
-# neighbors = ['tls_13_51', 'tls_14_53', 'tls_9_53']
-# agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, theta, exp, neighbors)
-
-
-# tls = 'tls_9_53'
-# listJunctions = [17]
-# actionPhases = [0, 1]
-# auxPhases=[[-1, [3,2,6]],
-#            [[5,2,4], -1]]
-# phases=[
-#     'rrrrGGGGrr',        
-#     'GGGGrrrrGG',
-#     'rrrrrrrrrr',
-#     'rrrrYYYYrr',
-#     'rrrruuuurr',
-#     'YYYYrrrrYY',
-#     'uuuurrrruu']
-# neighbors = ['tls_13_53', 'tls_7_53']
-# agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, theta, exp, neighbors)
-
-
-# tls = 'tls_7_45'
-# listJunctions = [12]
-# actionPhases = [0, 1]
-# auxPhases=[[-1, [3,2,6]],
-#            [[5,2,4], -1]]
-# phases=[    
-#     'GGGGGGGGGGOOrrrrrr',       
-#     'rrrrrrrrrrrrGGGGGG',
-#     'rrrrrrrrrrrrrrrrrr', 
-#     'YYYYYYYYYYOOrrrrrr',
-#     'uuuuuuuuuuOOrrrrrr',
-#     'rrrrrrrrrrrrYYYYYY',
-#     'rrrrrrrrrrrruuuuuu']
-# neighbors = ['tls_13_45', 'tls_7_46']
-# agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, theta, exp, neighbors)
-
-
-# tls = 'tls_7_46'
-# listJunctions = [13]
-# actionPhases = [0, 1]
-# auxPhases=[[-1, [3,2,6]],
-#            [[5,2,4], -1]]
-# phases=[    
-#     'GGGGGrrrrrrGGG',        
-#     'rrrrrGGGGGGrrr',
-#     'rrrrrrrrrrrrrr',
-#     'YYYYYrrrrrrYYY',
-#     'uuuuurrrrrruuu',
-#     'rrrrrYYYYYYrrr',
-#     'rrrrruuuuuurrr']
-# neighbors = ['tls_7_45', 'tls_7_47']
-# agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, theta, exp, neighbors)
-
-
-# tls = 'tls_7_47'
-# listJunctions = [14]
-# actionPhases = [0, 1]
-# auxPhases=[[-1, [3,2,6]],
-#            [[5,2,4], -1]]
-# phases=[    
-#     'GGGGGrrrrrrrGGG',        
-#     'rrrrrGGGGGGGrrr',
-#     'rrrrrrrrrrrrrrr',
-#     'YYYYYrrrrrrrYYY',
-#     'uuuuurrrrrrruuu',
-#     'rrrrrYYYYYYYrrr',
-#     'rrrrruuuuuuurrr']
-# neighbors = ['tls_7_46', 'tls_7_49']
-# agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, theta, exp, neighbors)
-
-
-# tls = 'tls_7_49'
-# listJunctions = [15]
-# actionPhases = [0, 1]
-# auxPhases=[[-1, [3,2,6]],
-#            [[5,2,4], -1]]
-# phases=[    
-#     'rrGGGGGGGG',        
-#     'GGrrrrrrrr',
-#     'rrrrrrrrrr',
-#     'rrYYYYYYYY',
-#     'rruuuuuuuu',
-#     'YYrrrrrrrr',
-#     'uurrrrrrrr']
-# neighbors = ['tls_7_47', 'tls_7_53']
-# agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, theta, exp, neighbors)
-
-
-# tls = 'tls_7_53'
-# listJunctions = [16]
-# actionPhases = [0, 1]
-# auxPhases=[[-1, [3,2,6]],
-#            [[5,2,4], -1]]
-# phases=[    
-#     'GGGGGrrrGGGGrrrr',        
-#     'rrrrrGGGrrrrGGGG',
-#     'rrrrrrrrrrrrrrrr',
-#     'YYYYYrrrYYYYrrrr',
-#     'uuuuurrruuuurrrr',
-#     'rrrrrYYYrrrrYYYY',
-#     'rrrrruuurrrruuuu']
-# neighbors = ['tls_7_49', 'tls_9_53']
-# agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, theta, exp, neighbors)
+tls = 'tls_7_53'
+listJunctions = [16]
+actionPhases = [0, 1]
+auxPhases=[[-1, [3,2,6]],
+           [[5,2,4], -1]]
+phases=[    
+    'GGGGGrrrGGGGrrrr',        
+    'rrrrrGGGrrrrGGGG',
+    'rrrrrrrrrrrrrrrr',
+    'YYYYYrrrYYYYrrrr',
+    'uuuuurrruuuurrrr',
+    'rrrrrYYYrrrrYYYY',
+    'rrrrruuurrrruuuu']
+plan2 = [[24,'rrrrrGGGrrrrGGGG'],[3,'rrrrrYYYrrrrYYYY'],[1,'rrrrrrrrrrrrrrrr'],
+         [2,'uuuuurrruuuurrrr'],[71,'GGGGGrrrGGGGrrrr'],[3,'YYYYYrrrYYYYrrrr'],
+         [2,'rrrrruuurrrruuuu'],[14,'rrrrrGGGrrrrGGGG']]
+plan3 = [[53,'GGGGGrrrGGGGrrrr'],[3,'YYYYYrrrYYYYrrrr'],[2,'rrrrruuurrrruuuu'],
+         [33,'rrrrrGGGrrrrGGGG'],[3,'rrrrrYYYrrrrYYYY'],[1,'rrrrrrrrrrrrrrrr'],
+         [2,'uuuuurrruuuurrrr'],[23,'GGGGGrrrGGGGrrrr']]
+plan4 = [[6,'rrrrrGGGrrrrGGGG'],[3,'rrrrrYYYrrrrYYYY'],[1,'rrrrrrrrrrrrrrrr'],
+         [2,'uuuuurrruuuurrrr'],[76,'GGGGGrrrGGGGrrrr'],[3,'YYYYYrrrYYYYrrrr'],
+         [2,'rrrrruuurrrruuuu'],[27,'rrrrrGGGrrrrGGGG']]
+neighbors = ['tls_7_49', 'tls_9_53']
+agent_TLS[tls] = TLS(tls, listJunctions, phases, actionPhases, auxPhases, beta, 
+    neighbors, plan2, plan3, plan4)

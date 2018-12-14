@@ -30,6 +30,7 @@ class TLS(object):
 		self.counterPlan = 0
 		self.RedYellowGreenState = ''
 		self.change_action = False
+		self.timeInGreen = 0
 
 		#Almacena informacion del agente por interseccion (colas, tiempo de espera)  
 		self.queueEdgeTracker = {}
@@ -109,6 +110,15 @@ class TLS(object):
 			self.V[nb] = np.zeros((self.numJointStates[nb],nbAct))
 			self.M[nb] = np.ones((self.numJointStates[nb],nbAct))/nbAct
 
+	def set_first_action(self):	
+		seed = random.random()
+		random.seed(seed)
+		self.currAction = random.randint(0,len(self.actionPhases)-1) 
+		self.lastAction = self.currAction
+		self.RedYellowGreenState = self.phases[self.currAction]
+		self.finishPhase = [0, False]
+
+
 			#self.getJointState(0)
 
 	def ft_get_phase(self,currSod):
@@ -119,11 +129,12 @@ class TLS(object):
 			self.RedYellowGreenState = action[1]
 			self.counterPlan = (self.counterPlan+1)%len(self.plan2)
 			self.change_action = False
-			if self.phases.index(self.RedYellowGreenState) in self.actionPhases:
-				self.change_action = True
-				self.updateStateAction()
-				self.currAction = self.phases.index(self.RedYellowGreenState)				
-				self.getJointState(currSod)
+			if self.RedYellowGreenState in self.phases:
+				if self.phases.index(self.RedYellowGreenState) in self.actionPhases:
+					self.change_action = True
+					self.updateStateAction()
+					self.currAction = self.phases.index(self.RedYellowGreenState)				
+					self.getJointState(currSod)
 		elif currSod>=18000 and currSod<32400:
 			#execute plan 3
 			if currSod == 18000:
@@ -133,11 +144,12 @@ class TLS(object):
 			self.RedYellowGreenState = action[1]
 			self.counterPlan = (self.counterPlan+1)%len(self.plan3)
 			self.change_action = False
-			if self.phases.index(self.RedYellowGreenState) in self.actionPhases:
-				self.change_action = True
-				self.updateStateAction()
-				self.currAction = self.phases.index(self.RedYellowGreenState)				
-				self.getJointState(currSod)
+			if self.RedYellowGreenState in self.phases:
+				if self.phases.index(self.RedYellowGreenState) in self.actionPhases:
+					self.change_action = True
+					self.updateStateAction()
+					self.currAction = self.phases.index(self.RedYellowGreenState)				
+					self.getJointState(currSod)
 		else:
 			#execute plan 4
 			if currSod == 32400:
@@ -147,11 +159,12 @@ class TLS(object):
 			self.RedYellowGreenState = action[1]
 			self.counterPlan = (self.counterPlan+1)%len(self.plan4)
 			self.change_action = False
-			if self.phases.index(self.RedYellowGreenState) in self.actionPhases:
-				self.change_action = True
-				self.updateStateAction()
-				self.currAction = self.phases.index(self.RedYellowGreenState)				
-				self.getJointState(currSod)
+			if self.RedYellowGreenState in self.phases:
+				if self.phases.index(self.RedYellowGreenState) in self.actionPhases:
+					self.change_action = True
+					self.updateStateAction()
+					self.currAction = self.phases.index(self.RedYellowGreenState)				
+					self.getJointState(currSod)
 
 	def ft_check_complete_phase(self, currSod):
 		if currSod == self.finishPhase[0]:
@@ -260,8 +273,7 @@ class TLS(object):
 			s = self.lastJointState[nb]
 			a = self.lastJointAction[nb]
 			s_ = self.currJointState[nb]
-			r = self.currReward
-
+			r = self.currReward			
 			act_j = self.jointActions[nb][a][1]
 			self.V[nb][s, act_j] += 1.0
 			self.M[nb][s, ] = self.V[nb][s, ] / np.sum(self.V[nb][s,])
@@ -278,6 +290,7 @@ class TLS(object):
 		unigen = random.random()        
 		#self.epsilon = np.exp(-(1.0/180.0)*((1.0*day)+(min/60.0))) 
 		self.epsilon = np.exp(-(1.0/130.0)*((1.0*day)+(min/60.0))) 
+		self.epsilon = 0.3
 		
 		if(unigen < self.epsilon):
 			#Explorar
@@ -292,6 +305,12 @@ class TLS(object):
 						QM[act_i] += self.QValues[nb][s][aij] * self.M[nb][s][act_j]
 			self.currAction = np.argmax(QM)
 		self.finishPhase = [sec, False]
+		if self.lastAction == self.currAction:
+			self.timeInGreen += var.minTimeGreen
+		else: 
+			self.timeInGreen = 0
+		if self.timeInGreen > var.maxTimeGreen:
+			self.currAction = 1 if (self.currAction==0) else 0
 
 	def setPhase(self, currSod):
 		aux_phase = self.auxPhases[self.lastAction][self.currAction]

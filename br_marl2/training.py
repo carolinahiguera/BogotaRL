@@ -6,7 +6,7 @@ if 'SUMO_HOME' in os.environ:
 else:   
 	sys.exit("please declare environment variable 'SUMO_HOME'")
 import traci
-sumoBinary = "sumo-gui" #sumo-gui
+sumoBinary = "sumo" #sumo-gui
 import random
 import pandas as pd
 import numpy as np
@@ -107,7 +107,7 @@ def br_marl_learning():
 	for tls in var.agent_TLS.keys():
 		var.agent_TLS[tls].initialize()
 	#learn previously from Fixed Time control to speed up learning
-	for day in range(0,int(var.episodes*0.3)):
+	for day in range(0,int(var.episodes*var.pTransfer)):
 		fileOut = open("days.csv","w")
 		fileOut.write("Training day with FT: "+str(day)+"\n")
 		fileOut.close()
@@ -143,7 +143,7 @@ def br_marl_learning():
 		traci.close()
 
 	#switch to br-marl 
-	for day in range(int(var.episodes*0.3), var.episodes):
+	for day in range(int(var.episodes*var.pTransfer), var.episodes):
 		fileOut = open("days.csv","w")
 		fileOut.write("Training day with BR: "+str(day)+"\n")
 		fileOut.close()
@@ -151,13 +151,19 @@ def br_marl_learning():
 		sumoCmd = [sumoBinary, "-c", "../redSumo/bogota.sumo.cfg", "--no-step-log", "true"]
 		traci.start(sumoCmd)     
 		
-		ini_dataframes()	
+		ini_dataframes()
+		for tls in var.agent_TLS.keys():
+			var.agent_TLS[tls].set_first_action()
+		print('Day: ' + str(day))
 
 		for currSod in range(0,var.secondsInDay):
+			print('currSod: ' + str(currSod))
 			traci.simulationStep()
 			gets.getObservation(currSod)
 			for tls in var.agent_TLS.keys():
+				print('TLS: '+tls)
 				if var.agent_TLS[tls].finishPhase[1]:
+					print('br_marl')
 					var.agent_TLS[tls].receive_reward()
 					var.agent_TLS[tls].updateStateAction()
 					var.agent_TLS[tls].learnPolicy(currSod)

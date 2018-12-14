@@ -576,7 +576,7 @@
 		<phase duration="16" state="rrGGGGGGGG"/>
 	</tlLogic>
 	<tlLogic id="tls_7_49" type="static" programID="plan4_tls_7_49" offset="0">
-		<phase duration="11" state="GGrrrrrrrr"/>									
+		<phase duration="11" state="GGrrrrrrrr"/>				
 		<phase duration="3"  state="YYrrrrrrrr"/>
 		<phase duration="2"  state="rruuuuuuuu"/>
 		<phase duration="71" state="rrGGGGGGGG"/>
