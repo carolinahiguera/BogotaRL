@@ -11,7 +11,6 @@ import itertools
 from scipy.cluster.vq import vq, kmeans, whiten
 path_obs = '~/Documents/BogotaRL/br_marl/csv_files_obs/'
 
-
 class TLS(object):
 
 	def __init__(self, ID, listJunctions, phases, actionPhases, auxPhases, beta, 
@@ -41,8 +40,20 @@ class TLS(object):
 		self.speedLaneTracker = {} 
 
 		#Parametros del aprendizaje
+		self.secsOfTF = var.pTransfer*var.episodes*var.secondsInDay
+		self.secsOfBR = (1-var.pTransfer)*var.episodes*var.secondsInDay
+
+		self.alpha_FT = var.alpha_FT
+		self.alpha_BR_start = var.alpha_BR_start
+		self.alpha_BR_end = var.alpha_BR_end	
+		self.alpha_expFactor = np.log(alpha_BR_start/alpha_BR_end)
+
+		self.epsilon_BR_start = var.epsilon_BR_start
+		self.epsilon_BR_end = var.epsilon_BR_end
+		self.epsilon_expFactor = np.log(epsilon_BR_start/epsilon_BR_end)
+		self.epsilon = 0.0
+
 		self.gamma = 0.9
-		self.epsilon = 0.3
 		self.currAction = -1
 		self.lastAction = -1
 		self.currReward  = 0
@@ -237,8 +248,12 @@ class TLS(object):
 		br = QM[ai_new]
 		return br
 
-	def get_alpha(self, currSod):
-		return 0.1
+	def get_alpha(self, currSod, day):
+		totalSec = day*var.secondsInDay + currSod
+		alpha = self.alpha_BR_start * np.exp(-self.alpha_expFactor*(totalSec-self.secsOfTF)/self.secsOfBR)
+		#min = int(round(currSod/60.0))
+		#alpha = self.alpha_FT * np.exp(-(1.0/180.0)*((1.0*day)+(min/60.0))) 
+		return alpha
 
 	def updateQValue(self, currSod):
 		self.updateStateAction()
@@ -253,7 +268,7 @@ class TLS(object):
 			self.V[nb][s, act_j] += 1.0
 			self.M[nb][s, ] = self.V[nb][s, ] / np.sum(self.V[nb][s,])
 			br = self.getBR_ft(nb, s_)
-			alpha = self.get_alpha(currSod)
+			alpha = self.alpha_FT
 			lastQ = self.QValues[nb][s][a]
 			self.QValues[nb][s][a] = lastQ + alpha*(r + self.gamma*br - lastQ)
 
@@ -267,7 +282,7 @@ class TLS(object):
 		return br
 
 	
-	def learnPolicy(self, currSod):
+	def learnPolicy(self, currSod, day):
 		self.getJointState(currSod)
 		for nb in self.neighbors:
 			s = self.lastJointState[nb]
@@ -279,7 +294,7 @@ class TLS(object):
 			self.M[nb][s, ] = self.V[nb][s, ] / np.sum(self.V[nb][s,])
 
 			br = self.getBR(nb, s_)
-			alpha = self.get_alpha(currSod)
+			alpha = self.get_alpha(currSod, day)
 			lastQ = self.QValues[nb][s][a]
 			self.QValues[nb][s][a] = lastQ + alpha*(r + self.gamma*br - lastQ)			
 	
@@ -289,8 +304,12 @@ class TLS(object):
 		random.seed(seed)
 		unigen = random.random()        
 		#self.epsilon = np.exp(-(1.0/180.0)*((1.0*day)+(min/60.0))) 
-		self.epsilon = np.exp(-(1.0/130.0)*((1.0*day)+(min/60.0))) 
-		self.epsilon = 0.3
+
+		totalSec = day*var.secondsInDay + sec
+		self.epsilon = self.epsilon_BR_start * np.exp(-self.epsilon_expFactor*(totalSec-self.secsOfTF)/self.secsOfBR)
+
+		# self.epsilon = np.exp(-(1.0/130.0)*((1.0*day)+(min/60.0))) 
+		# self.epsilon = 0.3
 		
 		if(unigen < self.epsilon):
 			#Explorar

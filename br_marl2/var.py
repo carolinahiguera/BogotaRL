@@ -12,17 +12,39 @@ global port, secondsInDay, episodes, sampleTime
 #avilable_ports = [8813, 8814, 8815, 8816, 8817, 8818, 8819, 8820] 
 #port = avilable_ports[2]
 
-secondsInDay = 46800#46800
+## Paths
+trainPath = '~/Documents/BogotaRL/br_marl2/csv_files_train/'
+
+secondsInDay = 46800 #46800
 episodes = 200
 episodesTest = 5
 days2Observe = 5
 sampleTime = 10
 timeYellow = 2
-minTimeGreen = 9#tipico entre 6 y 10seg
+minTimeGreen = 9 #tipico entre 6 y 10seg
 maxTimeGreen = minTimeGreen*7
 min_numStates = 10
-beta = [0.3, 0.7]
+beta = [0.5, 0.5]
 pTransfer = 0.2
+
+## alpha
+alpha_FT = 0.5
+alpha_BR_start = alpha_FT
+alpha_BR_end = 0.05
+
+## epsilon
+epsilon_BR_start = 0.2
+epsilon_BR_end = 0.05
+
+# learningPars = {
+#                 'pTransfer':pTransfer, 'episodes':episodes, 'secondsInDay':secondsInDay,
+
+#                 'alpha_FT':alpha_FT, 'alpha_BR_start':alpha_BR_start,
+#                 'alpha_BR_end':alpha_BR_end,
+
+#                 'epsilon_BR_start':epsilon_BR_start, 'epsilon_BR_end':epsilon_BR_end
+#                 }
+
 
 #====================== Juntion properties ======================
 junctions = {}

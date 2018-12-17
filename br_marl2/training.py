@@ -20,7 +20,7 @@ dfQueueTracker = {}
 dfWaitingTracker = {} 
 dfActions = {}
 dfEpsilon = {}
-path = '~/Documents/BogotaRL/br_marl2/csv_files_train/'
+path = var.trainPath
 
 def saveData(currSod):
 	global dfQueueTracker, dfWaitingTracker, dfRewVals, dfActions, dfEpsilon
@@ -93,7 +93,7 @@ def ini_dataframes():
 	dfRewVals = {}
 	dfQueueTracker = {}
 	dfWaitingTracker = {} 
-	rows = round(var.secondsInDay/var.sampleTime)
+	rows = int(round(var.secondsInDay/var.sampleTime))
 	for j in var.junctions.keys():
 		cols = len(var.junctions[j].edges) + 1
 		dfQueueTracker[j] = pd.DataFrame(index=range(rows), columns=range(cols))
@@ -133,12 +133,12 @@ def br_marl_learning():
 				for tls in var.agent_TLS.keys():
 					if var.agent_TLS[tls].change_action:
 						if (currSod%var.sampleTime)==0 and currSod<=var.agent_TLS[tls].finishPhase[0]:
-							print('updating q '+tls)
+							# print('updating q '+tls)
 							gets.getObservationNow()
 							var.agent_TLS[tls].receive_reward()
 							var.agent_TLS[tls].updateQValue(currSod)	
-			# if (currSod%var.sampleTime == 0):
-			# 	saveData(currSod)
+			if (currSod%var.sampleTime == 0):
+				saveData(currSod)
 		data2files(day)
 		traci.close()
 
@@ -154,19 +154,19 @@ def br_marl_learning():
 		ini_dataframes()
 		for tls in var.agent_TLS.keys():
 			var.agent_TLS[tls].set_first_action()
-		print('Day: ' + str(day))
+		#print('Day: ' + str(day))
 
 		for currSod in range(0,var.secondsInDay):
-			print('currSod: ' + str(currSod))
+			#print('currSod: ' + str(currSod))
 			traci.simulationStep()
 			gets.getObservation(currSod)
 			for tls in var.agent_TLS.keys():
-				print('TLS: '+tls)
+				#print('TLS: '+tls)
 				if var.agent_TLS[tls].finishPhase[1]:
-					print('br_marl')
+					#sprint('br_marl')
 					var.agent_TLS[tls].receive_reward()
 					var.agent_TLS[tls].updateStateAction()
-					var.agent_TLS[tls].learnPolicy(currSod)
+					var.agent_TLS[tls].learnPolicy(currSod, day)
 					var.agent_TLS[tls].getAction(day, currSod)
 			for tls in var.agent_TLS.keys():
 				var.agent_TLS[tls].getJointAction()
@@ -174,8 +174,8 @@ def br_marl_learning():
 				var.agent_TLS[tls].setPhase(currSod)
 				traci.trafficlight.setRedYellowGreenState(tls, var.agent_TLS[tls].RedYellowGreenState)
 
-			# if (currSod%var.sampleTime == 0):
-			# 	saveData(currSod)
+			if (currSod%var.sampleTime == 0):
+				saveData(currSod)
 		data2files(day)
 		traci.close()
 	#-----------------------------------------------------
