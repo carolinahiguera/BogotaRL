@@ -9,10 +9,10 @@ REVIEW: 04/10/2018
 '''
 #import fun2
 import training2
-#import testing
+import testing
 #exec(open("./fun2.py").read())
 exec(open("./training2.py").read())
-#exec(open("./testing.py").read())
+exec(open("./testing.py").read())
 # execfile("./fun.py")
 # execfile("./training.py")
 # execfile("./testing.py")
@@ -20,6 +20,6 @@ exec(open("./training2.py").read())
 #fun2.learnDiscretization()
 #fun.writeDataClusters()
 training2.br_marl_learning()
-#testing.ind_QLearning()
+testing.br_marl_testing()
 
 print("end")

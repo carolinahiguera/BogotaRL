@@ -29,6 +29,7 @@ dfWaitingTracker = {}
 dfSpeedTracker = {} 
 dfActions = {}
 path = '~/Documents/BogotaRL/br_marl/csv_files_test_t1/'
+path_train = '~/Documents/BogotaRL/br_marl/csv_files_train_t1/'
 
 def saveData(currSod):
 	global dfQueueTracker, dfWaitingTracker, dfSpeedTracker, dfRewVals, dfActions
@@ -114,8 +115,10 @@ def ini_dataframes():
 
 
 def br_marl_testing():  
-			
-	for day in range(0,var.days2Observe):
+	for tls in var.agent_TLS.keys():
+		var.agent_TLS[tls].ini4testing(path_train)
+
+	for day in range(0,var.episodesTest):
 		fileOut = open("days.csv","w")
 		fileOut.write("Testing day: "+str(day)+"\n")
 		fileOut.close()
@@ -125,7 +128,7 @@ def br_marl_testing():
 		
 		ini_dataframes()
 		for tls in var.agent_TLS.keys():
-			var.agent_TLS[tls].ini4testing()
+			var.agent_TLS[tls].set_first_action()		
 		
 		#Begins simulation of 1 day           
 		for currSod in range(0,var.secondsInDay):
@@ -142,11 +145,10 @@ def br_marl_testing():
 
 				for tls in var.agent_TLS.keys():
 					if var.agent_TLS[tls].finishPhase[1]:
-						var.agent_TLS[tls].applyPolicy(currSod)
 						var.agent_TLS[tls].updateReward1()
-						# var.agent_TLS[tls].updateStateAction()
-						# var.agent_TLS[tls].learnPolicy(currSod)
-						# var.agent_TLS[tls].getAction(day, currSod)
+						var.agent_TLS[tls].updateStateAction()
+						#var.agent_TLS[tls].learnPolicy(currSod)
+						var.agent_TLS[tls].applyPolicy(currSod)
 				for tls in var.agent_TLS.keys():
 					var.agent_TLS[tls].getJointAction()
 

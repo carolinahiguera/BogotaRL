@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import random
 import itertools
+import os
 from scipy.cluster.vq import vq, kmeans, whiten
 path = '~/Documents/BogotaRL/br_marl/csv_files_obs/'
 path2 = '~/Documents/BogotaRL/br_marl/csv_files_train/'
@@ -97,7 +98,7 @@ class TLS(object):
 				self.waitingLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e])) #EN MINUTOS
 				self.speedLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e])) #EN M/S
 	
-	def initialize(self):
+	def ini_frames(self):
 		for j in range(0,len(self.listJunctions)):
 			jName = self.listJunctions[j]
 			self.queueEdgeTracker[j] = np.zeros(len(var.junctions[jName].edges))
@@ -106,14 +107,17 @@ class TLS(object):
 			for e in range(0,len(var.junctions[jName].edges)):
 				self.queueLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e]))
 				self.waitingLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e])) #EN MINUTOS
-				self.speedLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e]))				
+				self.speedLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e]))
+
+	def initialize(self):
+		self.ini_frames()				
 		seed = random.random()
 		random.seed(seed)
 		self.currAction = random.randint(0,len(self.actionPhases)-1) 
 		self.RedYellowGreenState = self.phases[self.currAction]
-		self.finishPhase = [-1, True]
+		self.finishPhase = [-1, True]	
 
-	def ini4learning(self):
+	def load_observationData(self):
 		for nb in self.neighbors:
 			aux = []
 			df = pd.read_csv(path+'codebook_'+self.ID+'_'+nb+'.csv')
@@ -132,23 +136,54 @@ class TLS(object):
 			self.jointActions[nb] = list(itertools.product(self.actionPhases, var.agent_TLS[nb].actionPhases))
 			self.numJointActions[nb] = len(self.jointActions[nb])
 
-			self.QValues[nb] = np.zeros((self.numJointStates[nb],self.numJointActions[nb]))
-			self.QCounts[nb] = np.zeros((self.numJointStates[nb],self.numJointActions[nb]))
-			self.QAlpha[nb] = np.ones((self.numJointStates[nb],self.numJointActions[nb]))
+	def load_learningData(self, path_train, day):
+		for nb in self.neighbors:
+			df = pd.read_csv(path_train+'QValues_' + str(self.ID) +'_' + nb + '_day' + str(day) +'.csv')
+			if df.values.shape[1] > self.numJointActions[nb]:
+				self.QValues[nb] = df.values[:,1:]
+			else:
+				self.QValues[nb] = df.values
+
+			df = pd.read_csv(path_train+'QCounts_' + str(self.ID) +'_' + nb + '_day' + str(day) +'.csv')
+			if df.values.shape[1] > self.numJointActions[nb]:
+				self.QCounts[nb] = df.values[:,1:]
+			else:
+				self.QCounts[nb] = df.values
+
+			df = pd.read_csv(path_train+'QAlphas_' + str(self.ID) +'_' + nb + '_day' + str(day) +'.csv')
+			if df.values.shape[1] > self.numJointActions[nb]:
+				self.QAlpha[nb] = df.values[:,1:]
+			else:
+				self.QAlpha[nb] = df.values
+
 			nbAct = len(var.agent_TLS[nb].actionPhases)
-			self.V[nb] = np.zeros((self.numJointStates[nb],nbAct))
-			self.M[nb] = np.ones((self.numJointStates[nb],nbAct))/nbAct
+			df = pd.read_csv(path_train+'V_' + str(self.ID) +'_' + nb + '_day' + str(day) +'.csv')
+			if df.values.shape[1] > nbAct:
+				self.V[nb] = df.values[:,1:]
+			else:
+				self.V[nb] = df.values
 
+			df = pd.read_csv(path_train+'M_' + str(self.ID) +'_' + nb + '_day' + str(day) +'.csv')
+			if df.values.shape[1] > nbAct:
+				self.M[nb] = df.values[:,1:]
+			else:
+				self.M[nb] = df.values
 
-		for j in range(0,len(self.listJunctions)):
-			jName = self.listJunctions[j]
-			self.queueEdgeTracker[j] = np.zeros(len(var.junctions[jName].edges))
-			self.waitingEdgeTracker[j] = np.zeros(len(var.junctions[jName].edges)) #EN MINUTOS
-			self.speedEdgeTracker[j] = np.zeros(len(var.junctions[jName].edges))
-			for e in range(0,len(var.junctions[jName].edges)):
-				self.queueLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e]))
-				self.waitingLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e])) #EN MINUTOS
-				self.speedLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e]))
+	def ini4learning(self, path_train):	
+		self.ini_frames()
+		self.load_observationData()
+		if var.start_episode==0:
+			for nb in self.neighbors:
+				self.QValues[nb] = np.zeros((self.numJointStates[nb],self.numJointActions[nb]))
+				self.QCounts[nb] = np.zeros((self.numJointStates[nb],self.numJointActions[nb]))
+				self.QAlpha[nb] = np.ones((self.numJointStates[nb],self.numJointActions[nb]))
+				nbAct = len(var.agent_TLS[nb].actionPhases)
+				self.V[nb] = np.zeros((self.numJointStates[nb],nbAct))
+				self.M[nb] = np.ones((self.numJointStates[nb],nbAct))/nbAct
+		else:
+			day = var.start_episode - 1
+			self.load_learningData(path_train, day)	
+		
 	
 	def set_first_action(self):	
 		seed = random.random()
@@ -158,53 +193,12 @@ class TLS(object):
 		self.RedYellowGreenState = self.phases[self.currAction]
 		self.finishPhase = [0, False]
 
-	def ini4testing(self):
-		for nb in self.neighbors:
-			aux = []
-			df = pd.read_csv(path+'codebook_'+self.ID+'_'+nb+'.csv')
-			data = df.values
-			self.numJointStates[nb] = len(data)
-			for i in range(0,len(data)):
-				aux.append(np.delete(data[i],0))
-			self.codebook[nb] = np.array(aux)
-			aux = []
-			df = pd.read_csv(path+'normalize_'+self.ID+'_'+nb+'.csv')
-			data = df.values
-			for i in range(0,len(data)):
-				aux.append(data[i][1])
-			self.normalize[nb] = np.array(aux)
-
-			self.jointActions[nb] = list(itertools.product(self.actionPhases, var.agent_TLS[nb].actionPhases))
-			self.numJointActions[nb] = len(self.jointActions[nb])
-
-			df = pd.read_csv(path2+'QValues_' + str(self.ID) +'_' + nb + '_day' + str(var.episodes-1) +'.csv')
-			self.QValues[nb] = df.values
-			df = pd.read_csv(path2+'QCounts_' + str(self.ID) +'_' + nb + '_day' + str(var.episodes-1) +'.csv')
-			self.QCounts[nb] = df.values
-			df = pd.read_csv(path2+'QAlphas_' + str(self.ID) +'_' + nb + '_day' + str(var.episodes-1) +'.csv')
-			self.QAlpha[nb] = df.values
-			df = pd.read_csv(path2+'V_' + str(self.ID) +'_' + nb + '_day' + str(var.episodes-1) +'.csv')
-			self.V[nb] = df.values
-			df = pd.read_csv(path2+'M_' + str(self.ID) +'_' + nb + '_day' + str(var.episodes-1) +'.csv')
-			self.M[nb] = df.values
-
-
-		for j in range(0,len(self.listJunctions)):
-			jName = self.listJunctions[j]
-			self.queueEdgeTracker[j] = np.zeros(len(var.junctions[jName].edges))
-			self.waitingEdgeTracker[j] = np.zeros(len(var.junctions[jName].edges)) #EN MINUTOS
-			self.speedEdgeTracker[j] = np.zeros(len(var.junctions[jName].edges))
-			for e in range(0,len(var.junctions[jName].edges)):
-				self.queueLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e]))
-				self.waitingLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e])) #EN MINUTOS
-				self.speedLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e]))
+	def ini4testing(self, path_train):
+		day = var.episodes - 1
+		self.load_observationData()
+		self.load_learningData(path_train, day)
+		self.ini_frames()		
 		
-		seed = random.random()
-		random.seed(seed)
-		self.currAction = random.randint(0,len(self.actionPhases)-1) 
-		self.lastAction = self.currAction
-		self.RedYellowGreenState = self.phases[self.currAction]
-		self.finishPhase = [0, False]
 	
 	def updateStateAction(self):
 		self.lastAction = self.currAction
@@ -367,16 +361,22 @@ class TLS(object):
 			
 	def applyPolicy(self, sec):	
 		self.getJointState(sec)
-		QM = np.zeros([len(self.actionPhases)])
+		QM = np.zeros([len(self.actionPhases)])		
 		for act_i in self.actionPhases:
 			for nb in self.neighbors:
 				s = self.currJointState[nb]
 				for act_j in var.agent_TLS[nb].actionPhases:
 					aij = self.jointActions[nb].index((act_i, act_j))
-					QM[act_i] += self.QValues[nb][s][aij+1] * self.M[nb][s][act_j+1]
+					QM[act_i] += self.QValues[nb][s,aij] * self.M[nb][s,act_j]
 		self.lastAction = self.currAction
 		self.currAction = np.argmax(QM)
 		self.finishPhase = [sec, False]
+		if self.lastAction == self.currAction:
+			self.timeInGreen += var.minTimeGreen
+		else: 
+			self.timeInGreen = 0
+		if self.timeInGreen > var.maxTimeGreen:
+			self.currAction = 1 if (self.currAction==0) else 0		
 	
 	def saveLearning(self, day, path):  
 		for nb in self.neighbors:      

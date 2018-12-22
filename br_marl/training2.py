@@ -28,7 +28,7 @@ dfQueueTracker = {}
 dfWaitingTracker = {} 
 dfActions = {}
 dfEpsilon = {}
-path = '~/Documents/BogotaRL/br_marl/csv_files_train/'
+path = '~/Documents/BogotaRL/br_marl/csv_files_train_t1/'
 
 def saveData(currSod):
 	global dfQueueTracker, dfWaitingTracker, dfRewVals, dfActions, dfEpsilon
@@ -115,9 +115,9 @@ def ini_dataframes():
 
 def br_marl_learning():  
 	for tls in var.agent_TLS.keys():
-		var.agent_TLS[tls].ini4learning()
+		var.agent_TLS[tls].ini4learning(path)
 			
-	for day in range(0,var.episodes):
+	for day in range(var.start_episode, var.episodes):
 		fileOut = open("days.csv","w")
 		fileOut.write("Training day: "+str(day)+"\n")
 		fileOut.close()
