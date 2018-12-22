@@ -15,6 +15,7 @@ global port, secondsInDay, episodes, sampleTime
 secondsInDay = 46800#46800
 episodes = 200#200
 start_episode = 
+
 episodesTest = 5#5
 days2Observe = 5
 sampleTime = 10

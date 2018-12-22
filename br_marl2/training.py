@@ -20,7 +20,7 @@ dfQueueTracker = {}
 dfWaitingTracker = {} 
 dfActions = {}
 dfEpsilon = {}
-path = var.trainPath
+path = var.testPath
 
 def saveData(currSod):
 	global dfQueueTracker, dfWaitingTracker, dfRewVals, dfActions, dfEpsilon
@@ -107,43 +107,52 @@ def br_marl_learning():
 	for tls in var.agent_TLS.keys():
 		var.agent_TLS[tls].initialize()
 	#learn previously from Fixed Time control to speed up learning
-	for day in range(0,int(var.episodes*var.pTransfer)):
-		fileOut = open("days.csv","w")
-		fileOut.write("Training day with FT: "+str(day)+"\n")
-		fileOut.close()
-		
-		sumoCmd = [sumoBinary, "-c", "../redSumo/bogota.sumo.cfg", "--no-step-log", "true"]
-		traci.start(sumoCmd)     
-		
-		ini_dataframes()		
 
-		for currSod in range(0,var.secondsInDay):
-			traci.simulationStep()
-			gets.getObservation(currSod)
-			#FT control
-			for tls in var.agent_TLS.keys():
-				var.agent_TLS[tls].ft_check_complete_phase(currSod)
-				if var.agent_TLS[tls].finishPhase[1]:
-					var.agent_TLS[tls].ft_get_phase(currSod)
-					traci.trafficlight.setRedYellowGreenState(tls, var.agent_TLS[tls].RedYellowGreenState)
-			if currSod>120:
+	if var.start_episode < int(var.episodes*var.pTransfer):
+		for day in range(var.start_episode, int(var.episodes*var.pTransfer)):
+			fileOut = open("days.csv","w")
+			fileOut.write("Training day with FT: "+str(day)+"\n")
+			fileOut.close()
+			
+			sumoCmd = [sumoBinary, "-c", "../redSumo/bogota.sumo.cfg", "--no-step-log", "true"]
+			traci.start(sumoCmd)     
+			
+			ini_dataframes()		
+
+			for currSod in range(0,var.secondsInDay):
+				traci.simulationStep()
+				gets.getObservation(currSod)
+				#FT control
 				for tls in var.agent_TLS.keys():
-					var.agent_TLS[tls].getJointAction()
-				#update Q(s,a) values
-				for tls in var.agent_TLS.keys():
-					if var.agent_TLS[tls].change_action:
-						if (currSod%var.sampleTime)==0 and currSod<=var.agent_TLS[tls].finishPhase[0]:
-							# print('updating q '+tls)
-							gets.getObservationNow()
-							var.agent_TLS[tls].receive_reward()
-							var.agent_TLS[tls].updateQValue(currSod)	
-			if (currSod%var.sampleTime == 0):
-				saveData(currSod)
-		data2files(day)
-		traci.close()
+					var.agent_TLS[tls].ft_check_complete_phase(currSod)
+					if var.agent_TLS[tls].finishPhase[1]:
+						var.agent_TLS[tls].ft_get_phase(currSod)
+						traci.trafficlight.setRedYellowGreenState(tls, var.agent_TLS[tls].RedYellowGreenState)
+				if currSod>120:
+					for tls in var.agent_TLS.keys():
+						var.agent_TLS[tls].getJointAction()
+					#update Q(s,a) values
+					for tls in var.agent_TLS.keys():
+						if var.agent_TLS[tls].change_action:
+							if (currSod%var.sampleTime)==0 and currSod<=var.agent_TLS[tls].finishPhase[0]:
+								# print('updating q '+tls)
+								gets.getObservationNow()
+								var.agent_TLS[tls].receive_reward()
+								var.agent_TLS[tls].updateQValue(currSod)	
+				if (currSod%var.sampleTime == 0):
+					saveData(currSod)
+			data2files(day)
+			traci.close()
+
+	if var.start_episode < int(var.episodes*var.pTransfer):
+		first_training_day = int(var.episodes*var.pTransfer)
+	else:
+		first_training_day = var.start_episode
+
+	
 
 	#switch to br-marl 
-	for day in range(int(var.episodes*var.pTransfer), var.episodes):
+	for day in range(first_training_day, var.episodes):
 		fileOut = open("days.csv","w")
 		fileOut.write("Training day with BR: "+str(day)+"\n")
 		fileOut.close()

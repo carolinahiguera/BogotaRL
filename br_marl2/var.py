@@ -13,11 +13,14 @@ global port, secondsInDay, episodes, sampleTime
 #port = avilable_ports[2]
 
 ## Paths
-trainPath = '~/Documents/BogotaRL/br_marl2/csv_files_train/'
+trainPath = '~/Documents/BogotaRL/br_marl2/csv_files_train_t1/'
+testPath = '~/Documents/BogotaRL/br_marl2/csv_files_test_t1/'
 
-secondsInDay = 46800 #46800
-episodes = 200
-episodesTest = 5
+secondsInDay = 200 #46800
+episodes = 68
+start_episode = 65
+
+episodesTest = 2
 days2Observe = 5
 sampleTime = 10
 timeYellow = 2

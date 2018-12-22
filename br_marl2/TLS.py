@@ -30,6 +30,7 @@ class TLS(object):
 		self.RedYellowGreenState = ''
 		self.change_action = False
 		self.timeInGreen = 0
+		self.validPrevStates = False
 
 		#Almacena informacion del agente por interseccion (colas, tiempo de espera)  
 		self.queueEdgeTracker = {}
@@ -86,6 +87,20 @@ class TLS(object):
 			self.lastJointState[nb] = None
 
 	def initialize(self):
+		self.ini_frames()
+		self.load_observationData()
+
+		if var.start_episode==0:
+			for nb in self.neighbors:
+				self.QValues[nb] = np.zeros((self.numJointStates[nb],self.numJointActions[nb]))			
+				nbAct = len(var.agent_TLS[nb].actionPhases)
+				self.V[nb] = np.zeros((self.numJointStates[nb],nbAct))
+				self.M[nb] = np.ones((self.numJointStates[nb],nbAct))/nbAct
+		else:
+			day = var.start_episode - 1
+			self.load_learningData(var.trainPath, day)
+
+	def ini_frames(self):
 		for j in range(0,len(self.listJunctions)):
 			jName = self.listJunctions[j]
 			self.queueEdgeTracker[j] = np.zeros(len(var.junctions[jName].edges))
@@ -97,8 +112,9 @@ class TLS(object):
 			for e in range(0,len(var.junctions[jName].edges)):
 				self.queueLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e]))
 				self.waitingLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e])) #EN MINUTOS
-				self.speedLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e]))				
+				self.speedLaneTracker[j][e] = np.zeros(len(var.junctions[jName].lanes[e]))	
 
+	def load_observationData(self):
 		for nb in self.neighbors:
 			aux = []
 			df = pd.read_csv(path_obs+'codebook_'+self.ID+'_'+nb+'.csv')
@@ -113,13 +129,29 @@ class TLS(object):
 			for i in range(0,len(data)):
 				aux.append(data[i][1])
 			self.normalize[nb] = np.array(aux)
-
 			self.jointActions[nb] = list(itertools.product(self.actionPhases, var.agent_TLS[nb].actionPhases))
 			self.numJointActions[nb] = len(self.jointActions[nb])
-			self.QValues[nb] = np.zeros((self.numJointStates[nb],self.numJointActions[nb]))			
+
+	def load_learningData(self, path_train, day):
+		for nb in self.neighbors:
+			df = pd.read_csv(path_train+'QValues_' + str(self.ID) +'_' + nb + '_day' + str(day) +'.csv')
+			if df.values.shape[1] > self.numJointActions[nb]:
+				self.QValues[nb] = df.values[:,1:]
+			else:
+				self.QValues[nb] = df.values
+
 			nbAct = len(var.agent_TLS[nb].actionPhases)
-			self.V[nb] = np.zeros((self.numJointStates[nb],nbAct))
-			self.M[nb] = np.ones((self.numJointStates[nb],nbAct))/nbAct
+			df = pd.read_csv(path_train+'V_' + str(self.ID) +'_' + nb + '_day' + str(day) +'.csv')
+			if df.values.shape[1] > nbAct:
+				self.V[nb] = df.values[:,1:]
+			else:
+				self.V[nb] = df.values
+
+			df = pd.read_csv(path_train+'M_' + str(self.ID) +'_' + nb + '_day' + str(day) +'.csv')
+			if df.values.shape[1] > nbAct:
+				self.M[nb] = df.values[:,1:]
+			else:
+				self.M[nb] = df.values
 
 	def set_first_action(self):	
 		seed = random.random()
@@ -221,9 +253,12 @@ class TLS(object):
 
 	def updateStateAction(self):
 		self.lastAction = self.currAction
+		#self.validPrevStates = True
 		for nb in self.neighbors:
 			self.lastJointAction[nb] = self.currJointAction[nb]
-			self.lastJointState[nb] = self.currJointState[nb]  
+			self.lastJointState[nb] = self.currJointState[nb]
+			#if self.lastJointAction[nb]==None or self.lastJointState[nb]==None:
+			#	self.validPrevStates = False
 
 	def receive_reward(self):
 		reward = 0.0
@@ -288,6 +323,8 @@ class TLS(object):
 			s = self.lastJointState[nb]
 			a = self.lastJointAction[nb]
 			s_ = self.currJointState[nb]
+			if s==None or a==None or s_==None:
+				continue
 			r = self.currReward			
 			act_j = self.jointActions[nb][a][1]
 			self.V[nb][s, act_j] += 1.0
@@ -331,6 +368,25 @@ class TLS(object):
 		if self.timeInGreen > var.maxTimeGreen:
 			self.currAction = 1 if (self.currAction==0) else 0
 
+	def applyPolicy(self, sec):	
+		self.getJointState(sec)
+		QM = np.zeros([len(self.actionPhases)])		
+		for act_i in self.actionPhases:
+			for nb in self.neighbors:
+				s = self.currJointState[nb]
+				for act_j in var.agent_TLS[nb].actionPhases:
+					aij = self.jointActions[nb].index((act_i, act_j))
+					QM[act_i] += self.QValues[nb][s,aij] * self.M[nb][s,act_j]
+		self.lastAction = self.currAction
+		self.currAction = np.argmax(QM)
+		self.finishPhase = [sec, False]
+		if self.lastAction == self.currAction:
+			self.timeInGreen += var.minTimeGreen
+		else: 
+			self.timeInGreen = 0
+		if self.timeInGreen > var.maxTimeGreen:
+			self.currAction = 1 if (self.currAction==0) else 0	
+
 	def setPhase(self, currSod):
 		aux_phase = self.auxPhases[self.lastAction][self.currAction]
 		if(not(type(aux_phase)==list)):
@@ -360,8 +416,7 @@ class TLS(object):
 				self.RedYellowGreenState = self.phases[self.currAction]
 			#   print('aca4' + '  ' + self.RedYellowGreenState)
 			else:
-				self.finishPhase = [-1, True]
-
+				self.finishPhase = [-1, True]	
 
 	#SAVING
 	def saveLearning(self, day, path):  
