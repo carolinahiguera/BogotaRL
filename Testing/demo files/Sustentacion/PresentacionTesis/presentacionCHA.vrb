@@ -1,0 +1,6 @@
+\frametitle{Videos del control adaptativo por Q-BR}
+\begin{block}{Simulaciones}
+\href{run:./videos/6a7.mp4}{Hora pico 6am-7am}\\
+\href{run:./videos/9a10.mp4}{Hora valle 9am-10am}\\
+\href{run:./videos/12a1.mp4}{Hora pico 12m-1pm}
+\end{block}

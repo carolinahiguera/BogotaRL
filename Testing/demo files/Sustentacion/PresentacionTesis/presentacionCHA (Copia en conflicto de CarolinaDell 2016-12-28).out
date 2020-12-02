@@ -1,0 +1,26 @@
+\BOOKMARK [2][]{Outline0.1}{Motivaci\363n y definici\363n del problema}{}% 1
+\BOOKMARK [2][]{Outline0.2}{Soluci\363n propuesta}{}% 2
+\BOOKMARK [2][]{Outline0.3}{Aprendizaje por refuerzo}{}% 3
+\BOOKMARK [3][]{Outline0.3.1.4}{RL un agente}{Outline0.3}% 4
+\BOOKMARK [3][]{Outline0.3.2.5}{RL multiagente}{Outline0.3}% 5
+\BOOKMARK [2][]{Outline0.4}{Coordinaci\363n en MARL}{}% 6
+\BOOKMARK [2][]{Outline0.5}{Enfoques para establecer coordinaci\363n}{}% 7
+\BOOKMARK [2][]{Outline0.6}{Q-Learning y grafos de coordinaci\363n}{}% 8
+\BOOKMARK [3][]{Outline0.6.1.13}{VE}{Outline0.6}% 9
+\BOOKMARK [3][]{Outline0.6.2.14}{Algoritmo}{Outline0.6}% 10
+\BOOKMARK [2][]{Outline0.7}{Q-Learning y best response}{}% 11
+\BOOKMARK [3][]{Outline0.7.1.16}{Pasos}{Outline0.7}% 12
+\BOOKMARK [3][]{Outline0.7.2.20}{Algoritmo}{Outline0.7}% 13
+\BOOKMARK [2][]{Outline0.8}{Espacio de estados y acciones}{}% 14
+\BOOKMARK [2][]{Outline0.9}{Funci\363n de recompensa}{}% 15
+\BOOKMARK [2][]{Outline0.10}{Marco de prueba}{}% 16
+\BOOKMARK [2][]{Outline0.11}{Resultados}{}% 17
+\BOOKMARK [3][]{Outline0.11.1.24}{Curva de aprendizaje}{Outline0.11}% 18
+\BOOKMARK [3][]{Outline0.11.2.25}{Indicadores de desempe\361o}{Outline0.11}% 19
+\BOOKMARK [3][]{Outline0.11.3.26}{Indicadores de desempe\361o del sistema}{Outline0.11}% 20
+\BOOKMARK [3][]{Outline0.11.4.27}{Indicadores de desempe\361o por agente}{Outline0.11}% 21
+\BOOKMARK [3][]{Outline0.11.5.28}{Tiempo de viaje}{Outline0.11}% 22
+\BOOKMARK [2][]{Outline0.12}{Conclusiones}{}% 23
+\BOOKMARK [2][]{Outline0.13}{Trabajo futuro}{}% 24
+\BOOKMARK [2][]{Outline0.14}{Videos}{}% 25
+\BOOKMARK [2][]{Outline0.15}{Preguntas}{}% 26

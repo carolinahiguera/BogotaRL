@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<edges xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="http://sumo.sf.net/xsd/edges_file.xsd">
+
+ 	<edge id="A0W" from="6" to="0" type="edg2ln"/>
+ 	<edge id="A6E" from="0" to="6" type="edg2ln"/>
+ 	<edge id="A7E" from="1" to="7" type="edg2ln"/>
+ 	<edge id="A8E" from="2" to="8" type="edg2ln"/>
+ 	<edge id="A9N" from="0" to="9" type="edg3ln"/>
+ 	<edge id="A0N" from="1" to="0" type="edg3ln"/>
+ 	<edge id="A1N" from="2" to="1" type="edg3ln"/>
+ 	<edge id="A2N" from="10" to="2" type="edg3ln"/>
+ 	<edge id="A14W" from="0" to="14" type="edg2ln"/>
+ 	<edge id="A0E" from="14" to="0" type="edg2ln"/>
+ 	<edge id="A1E" from="11" to="1" type="edg2ln"/>
+ 	<edge id="A2E" from="12" to="2" type="edg2ln"/>
+ 	<edge id="A12S" from="11" to="12" type="edg2ln_2"/>
+ 	<edge id="A13S" from="12" to="13" type="edg2ln"/>
+ 	<edge id="A11E" from="15" to="11" type="edg2ln_1"/>
+ 	<edge id="A12E" from="16" to="12" type="edg2ln_1"/>
+ 	<edge id="A15S" from="14" to="15" type="edg2ln"/>
+ 	<edge id="A16S" from="15" to="16" type="edg2ln_2"/>
+ 	<edge id="A17S" from="16" to="17" type="edg2ln"/>
+ 	<edge id="A3W" from="14" to="3" type="edg2ln"/>
+ 	<edge id="A14E" from="3" to="14" type="edg2ln"/>
+ 	<edge id="A15E" from="4" to="15" type="edg2ln_1"/>
+ 	<edge id="A16E" from="5" to="16" type="edg2ln_1"/>
+ 	<edge id="A18N" from="3" to="18" type="edg3ln"/>
+	<edge id="A3N" from="4" to="3" type="edg3ln"/>
+	<edge id="A4N" from="5" to="4" type="edg3ln"/>
+	<edge id="A5N" from="19" to="5" type="edg3ln"/>
+	<edge id="A3S" from="18" to="3" type="edg3ln"/>
+	<edge id="A4S" from="3" to="4" type="edg3ln"/>
+	<edge id="A5S" from="4" to="5" type="edg3ln"/>
+	<edge id="A19S" from="5" to="19" type="edg3ln"/>
+ 	<edge id="A20W" from="3" to="20" type="edg2ln"/>
+ 	<edge id="A4E" from="21" to="4" type="edg2ln"/>
+ 	<edge id="A5E" from="22" to="5" type="edg2ln"/>
+ 	
+</edges> 

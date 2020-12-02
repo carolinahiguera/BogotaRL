@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="miniCity.net.xml"/>
+        <route-files value="miniCity.rou.xml"/>        
+    </input>
+
+    <time>
+        <begin value="21600"/>
+        <end value="86400"/>
+    </time>   
+
+</configuration>

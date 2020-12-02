@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<types>
+   <type id="edg3ln" priority="1" numLanes="3" speed="13.889"/> <!-- speed in m/s -->
+   <type id="edg2ln" priority="2" numLanes="2" speed="8.333"/>
+   <type id="edg2ln_1" priority="3" numLanes="2" speed="8.333"/>
+   <type id="edg2ln_2" priority="7" numLanes="2" speed="8.333"/>
+</types>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="miniCity.net.xml" />
+        <route-files value="miniCity.rou.xml" /> 
+	<additional-files value="miniCity.add.xml" />       
+    </input>
+
+    <time>
+        <begin value="21600"/>
+        <end value="86400"/>
+    </time>   
+
+    <decals>
+	    <decal filename="./map_info.png" centerX="87.09" centerY="256.11" centerZ="0.00" width="140.00" height="90.00" altitude="0.00" rotation="0.00" tilt="0.00" roll="0.00" layer="0.00" screenRelative="0"/>
+	</decals>
+
+
+</configuration>

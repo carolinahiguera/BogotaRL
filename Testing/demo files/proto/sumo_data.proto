@@ -1,0 +1,20 @@
+syntax = "proto2";
+
+message Action{
+	required int32 agent_id = 1;
+	required int32 action = 2;
+}
+
+message Speed{
+	required int32 agent_id = 1;
+	repeated double speed = 2;
+}
+
+message SumoData {
+  required int32 time_stamp = 1;
+  repeated double travel_times = 2;
+  repeated Action action = 3;
+  repeated Speed mean_speed = 4;
+}
+
+

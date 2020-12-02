@@ -1,0 +1,14 @@
+<configuration>
+   <input>
+       <edge-files value="ak7_cl46-cl47.edg.xml"/>
+       <node-files value="ak7_cl46-cl47.nod.xml"/>
+       <type-files value="ak7_cl46-cl47.typ.xml"/>
+       <connection-files value="ak7_cl46-cl47.con.xml"/>
+   </input>
+   <output>
+       <output-file value="ak7_cl46-cl47.net.xml"/>
+   </output> 
+   <processing>
+       <no-turnarounds value="true"/>
+   </processing>
+</configuration>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nodes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="http://sumo.sf.net/xsd/nodes_file.xsd">
+
+   <node id="0" x="290.0" y="-176.0" type="traffic_light"/>
+   <node id="1" x="394.0" y="-188.0" type="traffic_light"/>
+   <node id="2" x="516.0" y="-192.0" type="traffic_light"/>
+   <node id="3" x="225.0" y="-435.0" type="traffic_light"/>
+   <node id="4" x="364.0" y="-455.0" type="traffic_light"/>
+   <node id="5" x="492.0" y="-449.0" type="traffic_light"/>
+   <node id="6" x="308.0" y="-34.0" />
+   <node id="7" x="409.0" y="-41.0" />
+   <node id="8" x="534.0" y="-49.0" />
+   <node id="9" x="132.0" y="-164.0" />
+   <node id="10" x="636.0" y="-200.0" />
+   <node id="11" x="382.0" y="-270.0" />
+   <node id="12" x="503.0" y="-288.0" />
+   <node id="13" x="629.0" y="-307.0" />
+   <node id="14" x="246.0" y="-354.0" />
+   <node id="15" x="377.0" y="-359.0" />
+   <node id="16" x="492.0" y="-364.0" />
+   <node id="17" x="620.0" y="-367.0" />
+   <node id="18" x="92.0" y="-408.0" />
+   <node id="19" x="615.0" y="-436.0" />
+   <node id="20" x="212.0" y="-525.0" />
+   <node id="21" x="354.0" y="-537.0" />
+   <node id="22" x="495.0" y="-491.0" />
+
+</nodes> 
+

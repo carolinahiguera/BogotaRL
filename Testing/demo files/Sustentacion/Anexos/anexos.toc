@@ -1,0 +1,8 @@
+\beamer@endinputifotherversion {3.24pt}
+\select@language {spanish}
+\beamer@sectionintoc {1}{A1: Q-VE}{1}{0}{1}
+\beamer@sectionintoc {2}{A2: VE}{2}{0}{2}
+\beamer@sectionintoc {3}{A3: Q-BR}{3}{0}{3}
+\beamer@sectionintoc {4}{A4:VQ}{5}{0}{4}
+\beamer@sectionintoc {5}{A5:fases}{6}{0}{5}
+\beamer@sectionintoc {6}{A6:CO-RL}{8}{0}{6}

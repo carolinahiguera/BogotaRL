@@ -1,0 +1,28 @@
+\beamer@endinputifotherversion {3.24pt}
+\select@language {spanish}
+\beamer@sectionintoc {1}{Motivaci\IeC {\'o}n y definici\IeC {\'o}n del problema}{2}{0}{1}
+\beamer@sectionintoc {2}{Soluci\IeC {\'o}n propuesta}{3}{0}{2}
+\beamer@sectionintoc {3}{Aprendizaje por refuerzo}{4}{0}{3}
+\beamer@subsectionintoc {3}{1}{RL un agente}{4}{0}{3}
+\beamer@subsectionintoc {3}{2}{RL multiagente}{5}{0}{3}
+\beamer@sectionintoc {4}{Coordinaci\IeC {\'o}n en MARL}{9}{0}{4}
+\beamer@sectionintoc {5}{Enfoques para establecer coordinaci\IeC {\'o}n}{10}{0}{5}
+\beamer@sectionintoc {6}{Q-Learning y grafos de coordinaci\IeC {\'o}n}{11}{0}{6}
+\beamer@subsectionintoc {6}{1}{VE}{13}{0}{6}
+\beamer@subsectionintoc {6}{2}{Algoritmo}{14}{0}{6}
+\beamer@sectionintoc {7}{Q-Learning y best response}{15}{0}{7}
+\beamer@subsectionintoc {7}{1}{Pasos}{16}{0}{7}
+\beamer@subsectionintoc {7}{2}{Algoritmo}{20}{0}{7}
+\beamer@sectionintoc {8}{Espacio de estados y acciones}{21}{0}{8}
+\beamer@sectionintoc {9}{Funci\IeC {\'o}n de recompensa}{22}{0}{9}
+\beamer@sectionintoc {10}{Marco de prueba}{23}{0}{10}
+\beamer@sectionintoc {11}{Resultados}{24}{0}{11}
+\beamer@subsectionintoc {11}{1}{Curva de aprendizaje}{24}{0}{11}
+\beamer@subsectionintoc {11}{2}{Indicadores de desempe\IeC {\~n}o}{25}{0}{11}
+\beamer@subsectionintoc {11}{3}{Indicadores de desempe\IeC {\~n}o del sistema}{26}{0}{11}
+\beamer@subsectionintoc {11}{4}{Indicadores de desempe\IeC {\~n}o por agente}{27}{0}{11}
+\beamer@subsectionintoc {11}{5}{Tiempo de viaje}{28}{0}{11}
+\beamer@sectionintoc {12}{Conclusiones}{29}{0}{12}
+\beamer@sectionintoc {13}{Trabajo futuro}{31}{0}{13}
+\beamer@sectionintoc {14}{Videos}{32}{0}{14}
+\beamer@sectionintoc {15}{Preguntas}{33}{0}{15}

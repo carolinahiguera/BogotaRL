@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+
+<vType accel="3.0" decel="6.0" id="Car0" length="4.0"  minGap="2.0" maxSpeed="50.0" sigma="0.5" color="1,0,0" guiShape="passenger" probability="0.356"/>
+<vType accel="3.0" decel="6.0" id="Car1" length="5.0"  minGap="1.5" maxSpeed="50.0" sigma="0.5" color="0,1,0" guiShape="passenger/sedan" probability="0.356"/>
+<vType accel="3.0" decel="6.0" id="Car2" length="6.0"  minGap="1.0" maxSpeed="45.0" sigma="0.5" color="0,0,1" guiShape="passenger/hatchback" probability="0.178"/>
+<vType accel="2.0" decel="6.0" id="Car3" length="7.0"  minGap="2.5" maxSpeed="50.0" sigma="0.5" color="1,1,0" guiShape="passenger/van" probability="0.036"/>
+<vType accel="3.0" decel="6.0" id="Car4" length="8.0"  minGap="2.0" maxSpeed="45.0" sigma="0.5" color="1,0,1" guiShape="passenger/van" probability="0.045"/>
+<vType accel="2.0" decel="5.0" id="Car5" length="9.0"  minGap="1.5" maxSpeed="45.0" sigma="0.5" color="0,1,1" guiShape="bus" probability="0.009"/>
+<vType accel="2.0" decel="5.0" id="Car6" length="10.0" minGap="1.5" maxSpeed="45.0" sigma="0.5" color="1,1,1" guiShape="bus" probability="0.010"/>
+<vType accel="1.5" decel="5.0" id="Car7" length="11.0" minGap="2.0" maxSpeed="40.0" sigma="0.5" color="0.5,0.5,0.5" guiShape="truck" probability="0.006"/>
+<vType accel="1.0" decel="5.0" id="Car8" length="12.0" minGap="2.5" maxSpeed="35.0" sigma="0.5" color="0.8,0.8,0.8" guiShape="truck" probability="0.004"/>
+
+<route id="0" edges="A0W A9N "/> 
+<route id="1" edges="A0W A14W A3W A18N "/> 
+<route id="2" edges="A0W A14W A3W A20W "/> 
+<route id="3" edges="A0W A14W A3W A4S A5S A19S "/> 
+<route id="4" edges="A2N A8E "/> 
+<route id="5" edges="A2N A1N A7E "/> 
+<route id="6" edges="A2N A1N A0N A6E "/> 
+<route id="7" edges="A2N A1N A0N A9N "/> 
+<route id="8" edges="A2N A1N A0N A14W A3W A18N "/> 
+<route id="9" edges="A2N A1N A0N A14W A3W A20W "/> 
+<route id="10" edges="A2N A1N A0N A14W A3W A4S A5S A19S "/> 
+<route id="11" edges="A5N A16E A17S "/> 
+<route id="12" edges="A5N A16E A12E A13S "/> 
+<route id="13" edges="A5N A16E A12E A2E A8E "/> 
+<route id="14" edges="A5N A16E A12E A2E A1N A7E "/> 
+<route id="15" edges="A5N A16E A12E A2E A1N A0N A6E "/> 
+<route id="16" edges="A5N A16E A12E A2E A1N A0N A9N "/> 
+<route id="17" edges="A5N A16E A12E A2E A1N A0N A14W A3W A18N "/> 
+<route id="18" edges="A5N A16E A12E A2E A1N A0N A14W A3W A20W "/> 
+<route id="19" edges="A5N A16E A12E A2E A1N A0N A14W A3W A4S A5S A19S "/> 
+<route id="20" edges="A5N A4N A15E A16S A17S "/> 
+<route id="21" edges="A5N A4N A15E A16S A12E A13S "/> 
+<route id="22" edges="A5N A4N A15E A16S A12E A2E A8E "/> 
+<route id="23" edges="A5N A4N A15E A16S A12E A2E A1N A7E "/> 
+<route id="24" edges="A5N A4N A15E A16S A12E A2E A1N A0N A6E "/> 
+<route id="25" edges="A5N A4N A15E A16S A12E A2E A1N A0N A9N "/> 
+<route id="26" edges="A5N A4N A15E A16S A12E A2E A1N A0N A14W A3W A18N "/> 
+<route id="27" edges="A5N A4N A15E A16S A12E A2E A1N A0N A14W A3W A20W "/> 
+<route id="28" edges="A5N A4N A15E A16S A12E A2E A1N A0N A14W A3W A4S A5S A19S "/> 
+<route id="29" edges="A5N A4N A15E A11E A12S A13S "/> 
+<route id="30" edges="A5N A4N A15E A11E A12S A2E A8E "/> 
+<route id="31" edges="A5N A4N A15E A11E A12S A2E A1N A7E "/> 
+<route id="32" edges="A5N A4N A15E A11E A12S A2E A1N A0N A6E "/> 
+<route id="33" edges="A5N A4N A15E A11E A12S A2E A1N A0N A9N "/> 
+<route id="34" edges="A5N A4N A15E A11E A12S A2E A1N A0N A14W A3W A18N "/> 
+<route id="35" edges="A5N A4N A15E A11E A12S A2E A1N A0N A14W A3W A20W "/> 
+<route id="36" edges="A5N A4N A15E A11E A12S A2E A1N A0N A14W A3W A4S A5S A19S "/> 
+<route id="37" edges="A5N A4N A15E A11E A1E A7E "/> 
+<route id="38" edges="A5N A4N A15E A11E A1E A0N A6E "/> 
+<route id="39" edges="A5N A4N A15E A11E A1E A0N A9N "/> 
+<route id="40" edges="A5N A4N A15E A11E A1E A0N A14W A3W A18N "/> 
+<route id="41" edges="A5N A4N A15E A11E A1E A0N A14W A3W A20W "/> 
+<route id="42" edges="A5N A4N A15E A11E A1E A0N A14W A3W A4S A5S A19S "/> 
+<route id="43" edges="A5N A4N A3N A18N "/> 
+<route id="44" edges="A3S A20W "/> 
+<route id="45" edges="A3S A4S A5S A19S "/> 
+<route id="46" edges="A4E A5S A19S "/> 
+<route id="47" edges="A4E A3N A18N "/> 
+<route id="48" edges="A4E A15E A16S A17S "/> 
+<route id="49" edges="A4E A15E A16S A12E A13S "/> 
+<route id="50" edges="A4E A15E A16S A12E A2E A8E "/> 
+<route id="51" edges="A4E A15E A16S A12E A2E A1N A7E "/> 
+<route id="52" edges="A4E A15E A16S A12E A2E A1N A0N A6E "/> 
+<route id="53" edges="A4E A15E A16S A12E A2E A1N A0N A9N "/> 
+<route id="54" edges="A4E A15E A16S A12E A2E A1N A0N A14W A3W A18N "/> 
+<route id="55" edges="A4E A15E A16S A12E A2E A1N A0N A14W A3W A20W "/> 
+<route id="56" edges="A4E A15E A16S A12E A2E A1N A0N A14W A3W A4S A5S A19S "/> 
+<route id="57" edges="A4E A15E A11E A12S A13S "/> 
+<route id="58" edges="A4E A15E A11E A12S A2E A8E "/> 
+<route id="59" edges="A4E A15E A11E A12S A2E A1N A7E "/> 
+<route id="60" edges="A4E A15E A11E A12S A2E A1N A0N A6E "/> 
+<route id="61" edges="A4E A15E A11E A12S A2E A1N A0N A9N "/> 
+<route id="62" edges="A4E A15E A11E A12S A2E A1N A0N A14W A3W A18N "/> 
+<route id="63" edges="A4E A15E A11E A12S A2E A1N A0N A14W A3W A20W "/> 
+<route id="64" edges="A4E A15E A11E A12S A2E A1N A0N A14W A3W A4S A5S A19S "/> 
+<route id="65" edges="A4E A15E A11E A1E A7E "/> 
+<route id="66" edges="A4E A15E A11E A1E A0N A6E "/> 
+<route id="67" edges="A4E A15E A11E A1E A0N A9N "/> 
+<route id="68" edges="A4E A15E A11E A1E A0N A14W A3W A18N "/> 
+<route id="69" edges="A4E A15E A11E A1E A0N A14W A3W A20W "/> 
+<route id="70" edges="A4E A15E A11E A1E A0N A14W A3W A4S A5S A19S "/> 
+<route id="71" edges="A5E A19S "/> 
+<route id="72" edges="A5E A4N A15E A16S A17S "/> 
+<route id="73" edges="A5E A4N A15E A16S A12E A13S "/> 
+<route id="74" edges="A5E A4N A15E A16S A12E A2E A8E "/> 
+<route id="75" edges="A5E A4N A15E A16S A12E A2E A1N A7E "/> 
+<route id="76" edges="A5E A4N A15E A16S A12E A2E A1N A0N A6E "/> 
+<route id="77" edges="A5E A4N A15E A16S A12E A2E A1N A0N A9N "/> 
+<route id="78" edges="A5E A4N A15E A16S A12E A2E A1N A0N A14W A3W A18N "/> 
+<route id="79" edges="A5E A4N A15E A16S A12E A2E A1N A0N A14W A3W A20W "/> 
+<route id="80" edges="A5E A4N A15E A16S A12E A2E A1N A0N A14W A3W A4S A5S A19S "/> 
+<route id="81" edges="A5E A4N A15E A11E A12S A13S "/> 
+<route id="82" edges="A5E A4N A15E A11E A12S A2E A8E "/> 
+<route id="83" edges="A5E A4N A15E A11E A12S A2E A1N A7E "/> 
+<route id="84" edges="A5E A4N A15E A11E A12S A2E A1N A0N A6E "/> 
+<route id="85" edges="A5E A4N A15E A11E A12S A2E A1N A0N A9N "/> 
+<route id="86" edges="A5E A4N A15E A11E A12S A2E A1N A0N A14W A3W A18N "/> 
+<route id="87" edges="A5E A4N A15E A11E A12S A2E A1N A0N A14W A3W A20W "/> 
+<route id="88" edges="A5E A4N A15E A11E A12S A2E A1N A0N A14W A3W A4S A5S A19S "/> 
+<route id="89" edges="A5E A4N A15E A11E A1E A7E "/> 
+<route id="90" edges="A5E A4N A15E A11E A1E A0N A6E "/> 
+<route id="91" edges="A5E A4N A15E A11E A1E A0N A9N "/> 
+<route id="92" edges="A5E A4N A15E A11E A1E A0N A14W A3W A18N "/> 
+<route id="93" edges="A5E A4N A15E A11E A1E A0N A14W A3W A20W "/> 
+<route id="94" edges="A5E A4N A15E A11E A1E A0N A14W A3W A4S A5S A19S "/> 
+<route id="95" edges="A5E A4N A3N A18N "/> 
+<route id="96" edges="A5E A16E A17S "/> 
+<route id="97" edges="A5E A16E A12E A13S "/> 
+<route id="98" edges="A5E A16E A12E A2E A8E "/> 
+<route id="99" edges="A5E A16E A12E A2E A1N A7E "/> 
+<route id="100" edges="A5E A16E A12E A2E A1N A0N A6E "/> 
+<route id="101" edges="A5E A16E A12E A2E A1N A0N A9N "/> 
+<route id="102" edges="A5E A16E A12E A2E A1N A0N A14W A3W A18N "/> 
+<route id="103" edges="A5E A16E A12E A2E A1N A0N A14W A3W A20W "/> 
+<route id="104" edges="A5E A16E A12E A2E A1N A0N A14W A3W A4S A5S A19S "/> 
+
+</routes>

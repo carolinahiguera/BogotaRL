@@ -1,0 +1,17 @@
+syntax = "proto2";
+
+message TravelTime{
+	required int32 route_id = 1;
+	required double time = 2;
+}
+
+message Action{
+	required int32 agent_id = 1;
+	required int32 action = 2;
+}
+
+message SumoData {
+  required int32 time_stamp = 1;
+  repeated double travel_times = 2;
+  repeated Action action = 3;
+}
